@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>VK Аватарки — крупные аватарки и звёзды</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            max-width: 2000px;
+            margin: 1rem auto;
+            padding: 0 1rem;
+            background: #f0f2f5;
+        }
+        .container {
+            background: white;
+            border-radius: 28px;
+            padding: 1.2rem;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+        }
+        h2 { 
+            margin-top: 0; 
+            font-size: 1.6rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            flex-wrap: wrap; 
+            margin-bottom: 0.8rem;
+        }
+        .sync-status {
+            font-size: 13px;
+            background: #e8f0fe;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-weight: normal;
+        }
+        .sync-status.synced { background: #4caf50; color: white; }
+        .sync-status.syncing { background: #ff9800; color: white; }
+        .sync-status.error { background: #f44336; color: white; }
+        .flex-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+        .input-area { flex: 2; min-width: 280px; }
+        .token-area { flex: 1; min-width: 280px; }
+        textarea {
+            width: 100%;
+            height: 160px;
+            padding: 12px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            border: 1px solid #ccd0d5;
+            border-radius: 16px;
+            background: #fafbfc;
+            resize: vertical;
+        }
+        .token-wrapper { position: relative; }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 13px;
+            border: 1px solid #ccd0d5;
+            border-radius: 16px;
+            background: #fafbfc;
+            padding-right: 90px;
+        }
+        .paste-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #e4e6eb;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+        button {
+            background: #2787f5;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover { transform: scale(1.02); background: #1a66c9; }
+        .secondary-btn { background: #e4e6eb; color: #1e1e2a; }
+        .success-btn { background: #4caf50; }
+        .warning-btn { background: #ff9800; }
+        .status {
+            background: #e7f3ff;
+            padding: 10px;
+            border-radius: 14px;
+            font-size: 13px;
+            margin: 12px 0;
+            line-height: 1.4;
+        }
+        .control-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 20px;
+            margin: 12px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .stats-text { font-size: 14px; font-weight: 600; }
+        .sort-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+        .sort-buttons button {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            font-size: 12px;
+        }
+        .sort-buttons button.active {
+            background: rgba(255,255,255,0.4);
+            border: 1px solid white;
+        }
+        .filter-bar {
+            background: #f8f9fa;
+            padding: 10px 16px;
+            border-radius: 20px;
+            margin: 12px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        .filter-btn {
+            background: #e4e6eb;
+            padding: 5px 14px;
+            font-size: 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .filter-btn.active { background: #2787f5; color: white; }
+        
+        /* Сетка аватарок — шире из-за больших фото */
+        .avatars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .avatar-card {
+            background: white;
+            border-radius: 20px;
+            padding: 12px 12px 12px;
+            border: 2px solid #eef2f6;
+            position: relative;
+            transition: 0.2s;
+        }
+        .avatar-card.top-rated { border: 3px solid #ffc107; background: #fff9e6; }
+        .avatar-card.high-rating { border: 2px solid #ff9800; background: #fff8e1; }
+        .delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 30px;
+            height: 30px;
+            background: #f44336;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            z-index: 2;
+        }
+        /* Аватарка в 2 раза больше — 260x260px */
+        .avatar-card img {
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 8px auto;
+            display: block;
+            border: 3px solid #e4e6eb;
+        }
+        .user-name { 
+            font-size: 16px; 
+            font-weight: 700; 
+            margin: 6px 0 2px; 
+            text-align: center;
+        }
+        .user-link { 
+            font-size: 10px; 
+            color: #2787f5; 
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+        .criteria-container {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 8px 10px;
+            margin: 8px 0;
+            text-align: left;
+        }
+        .criterion { margin-bottom: 8px; }
+        .criterion-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        /* Звёзды в 1.5 раза больше — 32px */
+        .stars-small { display: flex; gap: 6px; justify-content: center; }
+        .star-small {
+            font-size: 32px;
+            cursor: pointer;
+            color: #ddd;
+            transition: 0.1s;
+        }
+        .star-small.selected { color: #ffc107; }
+        .total-rating {
+            margin-top: 8px;
+            padding-top: 6px;
+            border-top: 1px solid #e4e6eb;
+            text-align: center;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .total-rating span { color: #ff9800; font-size: 16px; }
+        .rank-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: #ffc107;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 30px;
+            z-index: 2;
+        }
+        .face-checkbox {
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 12px;
+            background: #f0f2f5;
+            padding: 5px;
+            border-radius: 30px;
+        }
+        .face-checkbox input { width: 16px; height: 16px; }
+        .note {
+            font-size: 11px;
+            color: #65676b;
+            margin-top: 16px;
+            background: #f0f7ff;
+            padding: 10px;
+            border-radius: 16px;
+            line-height: 1.4;
+        }
+        /* Адаптация под мобильные */
+        @media (max-width: 700px) {
+            .avatars-grid { grid-template-columns: 1fr; }
+            .avatar-card img { width: 220px; height: 220px; }
+            .star-small { font-size: 28px; }
+        }
+        @media (max-width: 480px) {
+            .avatar-card img { width: 180px; height: 180px; }
+            .star-small { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>⭐ VK Аватарки <span id="syncBadge" class="sync-status">☁️ Готово</span></h2>
+
+    <div class="flex-row">
+        <div class="input-area">
+            <label style="font-weight: 600; font-size: 13px; margin-bottom: 5px; display: block;">📋 Ссылки VK (каждая с новой строки)</label>
+            <textarea id="linksInput" placeholder="https://vk.com/id387384141&#10;https://vk.com/id375622954"></textarea>
+        </div>
+        <div class="token-area">
+            <label style="font-weight: 600; font-size: 13px; margin-bottom: 5px; display: block;">🔑 Access Token</label>
+            <div class="token-wrapper">
+                <input type="text" id="tokenInput" placeholder="вставьте токен или ссылку">
+                <button id="smartPasteBtn" class="paste-btn">📋 Вставить</button>
+            </div>
+            <div class="button-group">
+                <button id="loadBtn">🚀 Загрузить</button>
+                <button id="syncNowBtn" class="warning-btn">☁️ Синхр. сейчас</button>
+                <button id="clearBtn" class="secondary-btn">🗑 Очистить</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="status" class="status">⏳ Ожидает ввода</div>
+
+    <div id="controlBar" class="control-bar" style="display:none">
+        <div class="stats-text" id="statsText">📊 Всего: 0 | ⭐ Средний: 0</div>
+        <div class="sort-buttons">
+            <button id="sortByRatingDesc" class="secondary-btn">⭐ По убыванию</button>
+            <button id="sortByRatingAsc" class="secondary-btn">⭐ По возрастанию</button>
+            <button id="sortByOriginal" class="secondary-btn active">📋 По порядку</button>
+        </div>
+    </div>
+
+    <div id="filterBar" class="filter-bar" style="display:none">
+        <span style="font-weight: 600;">🔍 Фильтр:</span>
+        <button id="showAllBtn" class="filter-btn active">Все</button>
+        <button id="showHighRatedBtn" class="filter-btn">⭐ 4+ звёзд</button>
+        <button id="showUnratedBtn" class="filter-btn">❓ Без оценки</button>
+        <button id="showFacesOnlyBtn" class="filter-btn">👤 Только лица</button>
+        <button id="resetFacesBtn" class="filter-btn secondary-btn">🔄 Сброс лиц</button>
+    </div>
+
+    <div id="avatarsGrid" class="avatars-grid"></div>
+
+    <div class="note">
+        💾 <strong>Синхронизация через Google Sheets</strong> — все оценки автоматически сохраняются в облако.<br>
+        ⭐ Оценивайте по 4 критериям (Фигура, Внешность, Интересы, Моя оценка).<br>
+        🔄 Автосохранение каждые 10 секунд. Нажмите «Синхр. сейчас» для ручного сохранения.<br>
+        📱 <strong>На телефоне</strong> откройте этот же файл — данные подгрузятся автоматически.
+    </div>
+</div>
+
+<script>
+    // ============================================
+    // ВАША ССЫЛКА НА ВЕБ-ПРИЛОЖЕНИЕ
+    // ============================================
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_lczvkRPWLcWJREJ-aAgROWaGVUjaQQ0SX0n_thHSsudUPNpUiD4yA1LSNdYtuhbLWA/exec';
+
+    // Безопасный логгер
+    function safeLog() {
+        try { if (window.console && console.log) console.log.apply(console, arguments); } catch(e) {}
+    }
+    function safeWarn() {
+        try { if (window.console && console.warn) console.warn.apply(console, arguments); } catch(e) {}
+    }
+
+    const CRITERIA = [
+        { id: 'figure', name: '💃 Фигура', emoji: '💃' },
+        { id: 'looks', name: '👸 Внешность', emoji: '👸' },
+        { id: 'interests', name: '📚 Интересы', emoji: '📚' },
+        { id: 'myRating', name: '🧠 Моя оценка', emoji: '🧠' }
+    ];
+
+    let currentUsers = [];
+    let nextCardId = 0;
+    let currentSortMode = 'original';
+    let autoSyncTimer = null;
+    let isSyncing = false;
+
+    // === Синхронизация с Google Sheets ===
+    async function saveToCloud() {
+        if (!APPS_SCRIPT_URL || isSyncing) return false;
+        isSyncing = true;
+        const badge = document.getElementById('syncBadge');
+        if (badge) badge.className = 'sync-status syncing';
+        
+        try {
+            const usersToSave = currentUsers.filter(u => u.user).map(u => ({
+                link: u.link,
+                scores: u.scores,
+                totalRating: u.totalRating,
+                isFace: u.isFace,
+                isDeleted: u.isDeleted
+            }));
+            
+            const params = new URLSearchParams();
+            params.append('action', 'save');
+            params.append('data', JSON.stringify(usersToSave));
+            
+            await fetch(`${APPS_SCRIPT_URL}?${params.toString()}`, { method: 'GET', mode: 'no-cors' });
+            
+            if (badge) {
+                badge.className = 'sync-status synced';
+                setTimeout(() => {
+                    if(document.getElementById('syncBadge')) document.getElementById('syncBadge').className = 'sync-status';
+                }, 2000);
+            }
+            return true;
+        } catch(e) {
+            safeWarn('Ошибка сохранения:', e);
+            if (badge) badge.className = 'sync-status error';
+            return false;
+        } finally {
+            isSyncing = false;
+        }
+    }
+
+    async function loadFromCloud() {
+        if (!APPS_SCRIPT_URL) return null;
+        try {
+            const response = await fetch(`${APPS_SCRIPT_URL}?action=load`);
+            const data = await response.json();
+            if (data.status === 'ok' && data.users) {
+                const ratings = {};
+                for (const user of data.users) {
+                    ratings[user.link] = {
+                        scores: user.scores,
+                        totalRating: user.totalRating,
+                        isFace: user.isFace,
+                        isDeleted: user.isDeleted
+                    };
+                }
+                return ratings;
+            }
+        } catch(e) {
+            safeWarn('Ошибка загрузки:', e);
+        }
+        return null;
+    }
+
+    async function syncFromCloud() {
+        const cloudRatings = await loadFromCloud();
+        if (cloudRatings && currentUsers.length) {
+            let loadedCount = 0;
+            for (const user of currentUsers) {
+                if (user.user && cloudRatings[user.link]) {
+                    const cr = cloudRatings[user.link];
+                    user.scores = cr.scores || { figure:0, looks:0, interests:0, myRating:0 };
+                    user.totalRating = cr.totalRating || calculateTotalRating(user.scores);
+                    user.isFace = cr.isFace || false;
+                    user.isDeleted = cr.isDeleted || false;
+                    loadedCount++;
+                }
+            }
+            renderUIFromData();
+            const statusDiv = document.getElementById('status');
+            if (statusDiv) statusDiv.innerHTML = `✅ Загружено из облака: восстановлено ${loadedCount} оценок.`;
+            return true;
+        }
+        return false;
+    }
+
+    function startAutoSync() {
+        if (autoSyncTimer) clearInterval(autoSyncTimer);
+        autoSyncTimer = setInterval(() => {
+            if (currentUsers.length > 0 && !isSyncing) {
+                saveToCloud();
+            }
+        }, 10000);
+    }
+
+    function calculateTotalRating(scores) {
+        let sum = 0, count = 0;
+        for (const c of CRITERIA) {
+            const val = scores[c.id] || 0;
+            if (val > 0) { sum += val; count++; }
+        }
+        return count > 0 ? sum / count : 0;
+    }
+
+    function renderUIFromData() {
+        for (const user of currentUsers) {
+            if (!user.user) continue;
+            const card = document.getElementById(user.elementId);
+            if (!card) continue;
+            for (const c of CRITERIA) {
+                const rating = user.scores[c.id] || 0;
+                const starsDiv = card.querySelector(`.stars-${c.id}`);
+                if (starsDiv) {
+                    const stars = starsDiv.querySelectorAll('.star-small');
+                    stars.forEach((star, idx) => { if (idx+1 <= rating) star.classList.add('selected'); else star.classList.remove('selected'); });
+                }
+                const valSpan = card.querySelector(`.criterion-value-${c.id}`);
+                if (valSpan) valSpan.innerText = rating;
+            }
+            const totalSpan = card.querySelector('.total-rating span');
+            if (totalSpan) totalSpan.innerText = user.totalRating.toFixed(1);
+            card.classList.remove('top-rated', 'high-rating');
+            if (user.totalRating >= 4.5) card.classList.add('top-rated');
+            else if (user.totalRating >= 3.5) card.classList.add('high-rating');
+            let badge = card.querySelector('.rank-badge');
+            if (user.totalRating > 0) {
+                if (!badge) { badge = document.createElement('div'); badge.className = 'rank-badge'; card.insertBefore(badge, card.firstChild); }
+                if (user.totalRating >= 4.5) badge.innerHTML = '👑 ТОП';
+                else if (user.totalRating >= 4) badge.innerHTML = `⭐ ${user.totalRating.toFixed(1)}`;
+                else badge.innerHTML = `${user.totalRating.toFixed(1)} ⭐`;
+            } else if (badge) badge.remove();
+            const cb = card.querySelector(`#chk_${user.elementId}`);
+            if (cb) cb.checked = user.isFace;
+            if (user.isDeleted) card.style.display = 'none';
+            else card.style.display = 'block';
+        }
+        updateStats();
+    }
+
+    function updateStats() {
+        const visible = currentUsers.filter(u => !u.isDeleted);
+        const total = visible.length;
+        const avg = total > 0 ? (visible.reduce((s,u) => s + u.totalRating, 0) / total).toFixed(1) : 0;
+        const statsDiv = document.getElementById('statsText');
+        if (statsDiv) statsDiv.innerHTML = `📊 Всего: ${total} | ⭐ Средний: ${avg}`;
+    }
+
+    window.setCriterionRating = (cardId, criterionId, rating) => {
+        const user = currentUsers.find(u => u.elementId === cardId);
+        if (user && user.user && !user.isDeleted) {
+            user.scores[criterionId] = rating;
+            user.totalRating = calculateTotalRating(user.scores);
+            const card = document.getElementById(cardId);
+            if (card) {
+                const starsDiv = card.querySelector(`.stars-${criterionId}`);
+                if (starsDiv) {
+                    starsDiv.querySelectorAll('.star-small').forEach((star, idx) => {
+                        if (idx+1 <= rating) star.classList.add('selected');
+                        else star.classList.remove('selected');
+                    });
+                }
+                const valSpan = card.querySelector(`.criterion-value-${criterionId}`);
+                if (valSpan) valSpan.innerText = rating;
+                const totalSpan = card.querySelector('.total-rating span');
+                if (totalSpan) totalSpan.innerText = user.totalRating.toFixed(1);
+                card.classList.remove('top-rated', 'high-rating');
+                if (user.totalRating >= 4.5) card.classList.add('top-rated');
+                else if (user.totalRating >= 3.5) card.classList.add('high-rating');
+                let badge = card.querySelector('.rank-badge');
+                if (user.totalRating > 0) {
+                    if (!badge) { badge = document.createElement('div'); badge.className = 'rank-badge'; card.insertBefore(badge, card.firstChild); }
+                    if (user.totalRating >= 4.5) badge.innerHTML = '👑 ТОП';
+                    else if (user.totalRating >= 4) badge.innerHTML = `⭐ ${user.totalRating.toFixed(1)}`;
+                    else badge.innerHTML = `${user.totalRating.toFixed(1)} ⭐`;
+                } else if (badge) badge.remove();
+            }
+            updateStats();
+            if (currentSortMode !== 'original') sortAndRender();
+            saveToCloud();
+        }
+    };
+
+    window.deleteAccount = (cardId) => {
+        const user = currentUsers.find(u => u.elementId === cardId);
+        if (user && !user.isDeleted) {
+            user.isDeleted = true;
+            const card = document.getElementById(cardId);
+            if (card) card.style.display = 'none';
+            updateStats();
+            saveToCloud();
+        }
+    };
+
+    window.toggleFace = (cardId, checked) => {
+        const user = currentUsers.find(u => u.elementId === cardId);
+        if (user && user.user) {
+            user.isFace = checked;
+            saveToCloud();
+        }
+    };
+
+    function restoreAll() {
+        currentUsers.forEach(u => {
+            if (u.isDeleted) {
+                u.isDeleted = false;
+                const card = document.getElementById(u.elementId);
+                if(card) card.style.display = 'block';
+            }
+        });
+        updateStats();
+        if(currentSortMode !== 'original') sortAndRender();
+        saveToCloud();
+    }
+
+    function resetAllFaces() {
+        currentUsers.forEach(u => {
+            u.isFace = false;
+            const card = document.getElementById(u.elementId);
+            if(card) {
+                const cb = card.querySelector(`#chk_${u.elementId}`);
+                if(cb) cb.checked = false;
+            }
+        });
+        saveToCloud();
+    }
+
+    function sortAndRender() {
+        let sorted = [...currentUsers.filter(u => !u.isDeleted)];
+        if (currentSortMode === 'ratingDesc') sorted.sort((a,b) => (b.totalRating||0) - (a.totalRating||0));
+        else if (currentSortMode === 'ratingAsc') sorted.sort((a,b) => (a.totalRating||0) - (b.totalRating||0));
+        const grid = document.getElementById('avatarsGrid');
+        const cards = [...grid.children];
+        const order = new Map(sorted.map((u,i) => [u.elementId, i]));
+        cards.sort((a,b) => (order.get(a.id)||999) - (order.get(b.id)||999));
+        cards.forEach(c => grid.appendChild(c));
+        ['sortByRatingDesc','sortByRatingAsc','sortByOriginal'].forEach(id => { const btn = document.getElementById(id); if(btn) btn.classList.remove('active'); });
+        if(currentSortMode==='ratingDesc') document.getElementById('sortByRatingDesc')?.classList.add('active');
+        else if(currentSortMode==='ratingAsc') document.getElementById('sortByRatingAsc')?.classList.add('active');
+        else document.getElementById('sortByOriginal')?.classList.add('active');
+    }
+
+    function applyFilter(type) {
+        for (const u of currentUsers) {
+            const card = document.getElementById(u.elementId);
+            if (!card) continue;
+            if (u.isDeleted) { card.style.display = 'none'; continue; }
+            let show = true;
+            if (type === 'highRated') show = (u.totalRating||0) >= 3.5;
+            else if (type === 'unrated') show = !u.totalRating || u.totalRating === 0;
+            else if (type === 'faces') show = u.isFace === true;
+            card.style.display = show ? 'block' : 'none';
+        }
+        ['showAllBtn','showHighRatedBtn','showUnratedBtn','showFacesOnlyBtn'].forEach(id => { const btn = document.getElementById(id); if(btn) btn.classList.remove('active'); });
+        if(type==='all') document.getElementById('showAllBtn')?.classList.add('active');
+        if(type==='highRated') document.getElementById('showHighRatedBtn')?.classList.add('active');
+        if(type==='unrated') document.getElementById('showUnratedBtn')?.classList.add('active');
+        if(type==='faces') document.getElementById('showFacesOnlyBtn')?.classList.add('active');
+        updateStats();
+    }
+
+    // === VK API ===
+    function extractTokenFromString(input) {
+        if (!input) return null;
+        let token = input.trim();
+        if (token.includes('access_token=')) {
+            const match = token.match(/access_token=([^&]+)/);
+            if (match) token = decodeURIComponent(match[1]);
+        }
+        if (token.match(/^vk[12][a-z0-9\.]+/i) || token.length > 30) return token;
+        return token.length > 10 ? token : null;
+    }
+
+    function extractUserId(link) { const m = link.match(/id(\d+)/); return m ? m[1] : null; }
+    
+    function parseLinksFromText(text) {
+        const lines = text.split(/\r?\n/);
+        const links = [];
+        for (let line of lines) {
+            line = line.trim();
+            if (!line) continue;
+            const urls = line.match(/https?:\/\/[^\s]+/g);
+            if (urls) {
+                for (let url of urls) {
+                    if (url.includes('vk.com') && extractUserId(url)) links.push(url);
+                }
+            } else if (line.includes('vk.com') && extractUserId(line)) links.push(line);
+        }
+        return links;
+    }
+
+    function jsonpRequest(url, timeout=15000) {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            const cb = `jsonp_${Date.now()}_${Math.random().toString(36).substr(2,8)}`;
+            window[cb] = (data) => { delete window[cb]; document.head.removeChild(script); clearTimeout(timer); resolve(data); };
+            const timer = setTimeout(() => { delete window[cb]; document.head.removeChild(script); reject(new Error('Timeout')); }, timeout);
+            script.src = `${url}${url.includes('?')?'&':'?'}callback=${cb}`;
+            script.onerror = () => { delete window[cb]; document.head.removeChild(script); clearTimeout(timer); reject(new Error('Load error')); };
+            document.head.appendChild(script);
+        });
+    }
+
+    async function fetchUsersByLinks(links, token) {
+        const ids = [];
+        for (const link of links) {
+            const uid = extractUserId(link);
+            if (uid) ids.push(uid);
+        }
+        if (!ids.length) throw new Error('Нет ID');
+        const uniqueIds = [...new Set(ids)];
+        const url = `https://api.vk.com/method/users.get?user_ids=${uniqueIds.join(',')}&fields=photo_200&access_token=${token}&v=5.131`;
+        const data = await jsonpRequest(url);
+        if (data.error) throw new Error(`VK API: ${data.error.error_msg}`);
+        return data.response || [];
+    }
+
+    function escapeHtml(s) { if(!s) return ''; return s.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
+    function shorten(s, max) { return s.length <= max ? s : s.slice(0,max-3)+'...'; }
+
+    async function renderAvatars(usersArray, linksOrder) {
+        const grid = document.getElementById('avatarsGrid');
+        if (!usersArray.length && !linksOrder.length) { grid.innerHTML = '<p>⚠️ Нет ссылок</p>'; return; }
+        const userById = new Map(usersArray.map(u => [u.id, u]));
+        let html = '';
+        const newUsers = [];
+        for (const link of linksOrder) {
+            const uid = extractUserId(link);
+            const user = uid ? userById.get(Number(uid)) : null;
+            const cardId = `card_${nextCardId++}`;
+            if (user) {
+                let criteriaHtml = '';
+                for (const c of CRITERIA) {
+                    criteriaHtml += `
+                        <div class="criterion">
+                            <div class="criterion-header"><span>${c.emoji} ${c.name}</span><span class="criterion-value-${c.id}">0</span></div>
+                            <div class="stars-small stars-${c.id}">${[1,2,3,4,5].map(i => `<span class="star-small" onclick="setCriterionRating('${cardId}', '${c.id}', ${i})">★</span>`).join('')}</div>
+                        </div>`;
+                }
+                html += `
+                    <div id="${cardId}" class="avatar-card">
+                        <div class="delete-btn" onclick="deleteAccount('${cardId}')">✕</div>
+                        <img src="${user.photo_200 || user.photo_100}" onerror="this.src='https://vk.com/images/camera_200.png'">
+                        <div class="user-name">${escapeHtml(user.first_name)} ${escapeHtml(user.last_name)}</div>
+                        <a href="${link}" target="_blank" class="user-link">${shorten(link,45)}</a>
+                        <div class="criteria-container">${criteriaHtml}<div class="total-rating">⭐ Итог: <span>0</span>/5</div></div>
+                        <div class="face-checkbox"><input type="checkbox" id="chk_${cardId}" onchange="toggleFace('${cardId}', this.checked)"><label>😊 Настоящее лицо</label></div>
+                    </div>`;
+                newUsers.push({ elementId: cardId, link, scores: {figure:0,looks:0,interests:0,myRating:0}, totalRating:0, isFace:false, isDeleted:false, user });
+            } else {
+                html += `<div id="${cardId}" class="avatar-card"><div class="delete-btn" onclick="deleteAccount('${cardId}')">✕</div><img src="https://vk.com/images/camera_200.png"><div class="user-name">❌ Не найден</div><a href="${link}" target="_blank" class="user-link">${shorten(link,45)}</a><div class="criteria-container" style="opacity:0.5"><div class="criterion"><div class="criterion-header">💃 Фигура</div><div class="stars-small">★★★★★</div></div><div class="criterion"><div class="criterion-header">👸 Внешность</div><div class="stars-small">★★★★★</div></div><div class="criterion"><div class="criterion-header">📚 Интересы</div><div class="stars-small">★★★★★</div></div><div class="criterion"><div class="criterion-header">🧠 Моя оценка</div><div class="stars-small">★★★★★</div></div><div class="total-rating">Профиль недоступен</div></div><div class="face-checkbox" style="opacity:0.5"><input type="checkbox" disabled><label>Недоступно</label></div></div>`;
+                newUsers.push({ elementId: cardId, link, scores: {figure:0,looks:0,interests:0,myRating:0}, totalRating:0, isFace:false, isDeleted:false, user:null });
+            }
+        }
+        grid.innerHTML = html;
+        currentUsers = newUsers;
+        document.getElementById('controlBar').style.display = 'flex';
+        document.getElementById('filterBar').style.display = 'flex';
+        updateStats();
+        
+        await syncFromCloud();
+        startAutoSync();
+        
+        const statusDiv = document.getElementById('status');
+        statusDiv.innerHTML = `✅ Загружено ${usersArray.length} из ${linksOrder.length}. ☁️ Синхронизация активна!`;
+    }
+
+    async function loadAvatars() {
+        const rawToken = document.getElementById('tokenInput').value.trim();
+        const token = extractTokenFromString(rawToken);
+        const linksText = document.getElementById('linksInput').value;
+        if (!token) { document.getElementById('status').innerHTML = '⚠️ Введите токен'; return; }
+        const links = parseLinksFromText(linksText);
+        if (!links.length) { document.getElementById('status').innerHTML = '❌ Нет ссылок'; return; }
+        document.getElementById('status').innerHTML = '⏳ Загрузка...';
+        document.getElementById('loadBtn').disabled = true;
+        try {
+            const users = await fetchUsersByLinks(links, token);
+            await renderAvatars(users, links);
+        } catch(e) { 
+            document.getElementById('status').innerHTML = `❌ Ошибка: ${e.message}`;
+            safeWarn(e);
+        } finally { 
+            document.getElementById('loadBtn').disabled = false; 
+        }
+    }
+
+    async function smartPaste() {
+        try {
+            const text = await navigator.clipboard.readText();
+            const extracted = extractTokenFromString(text);
+            document.getElementById('tokenInput').value = extracted || text;
+            const btn = document.getElementById('smartPasteBtn');
+            const orig = btn.innerText;
+            btn.innerText = '✅ Готово!';
+            setTimeout(() => btn.innerText = orig, 1500);
+        } catch(e) { 
+            alert('Не удалось вставить. Попробуйте вручную.');
+        }
+    }
+
+    function clearAll() {
+        if(autoSyncTimer) clearInterval(autoSyncTimer);
+        document.getElementById('linksInput').value = '';
+        document.getElementById('tokenInput').value = '';
+        document.getElementById('avatarsGrid').innerHTML = '';
+        document.getElementById('controlBar').style.display = 'none';
+        document.getElementById('filterBar').style.display = 'none';
+        document.getElementById('status').innerHTML = '⏳ Очищено';
+        currentUsers = [];
+        nextCardId = 0;
+    }
+
+    // === Назначение обработчиков ===
+    document.getElementById('loadBtn').onclick = loadAvatars;
+    document.getElementById('clearBtn').onclick = clearAll;
+    document.getElementById('smartPasteBtn').onclick = smartPaste;
+    document.getElementById('syncNowBtn').onclick = () => saveToCloud();
+    document.getElementById('sortByRatingDesc').onclick = () => { currentSortMode = 'ratingDesc'; sortAndRender(); };
+    document.getElementById('sortByRatingAsc').onclick = () => { currentSortMode = 'ratingAsc'; sortAndRender(); };
+    document.getElementById('sortByOriginal').onclick = () => { currentSortMode = 'original'; sortAndRender(); };
+    document.getElementById('showAllBtn').onclick = () => applyFilter('all');
+    document.getElementById('showHighRatedBtn').onclick = () => applyFilter('highRated');
+    document.getElementById('showUnratedBtn').onclick = () => applyFilter('unrated');
+    document.getElementById('showFacesOnlyBtn').onclick = () => applyFilter('faces');
+    document.getElementById('resetFacesBtn').onclick = resetAllFaces;
+    
+    window.restoreAll = restoreAll;
+    
+    safeLog('Приложение загружено');
+</script>
+</body>
+</html>

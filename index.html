@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>VK Аватарки — 3 вуза</title>
+    <title>VK Аватарки — НГАУ, НГТУ, СибУПк</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -179,6 +179,7 @@
         }
         .avatar-card.top-rated { border: 3px solid #ffc107; background: #fff9e6; }
         .avatar-card.high-rating { border: 2px solid #ff9800; background: #fff8e1; }
+        .avatar-card.deleted { display: none; }
         .delete-btn {
             position: absolute;
             top: 6px;
@@ -196,6 +197,7 @@
             font-weight: bold;
             z-index: 2;
         }
+        .delete-btn:hover { background: #d32f2f; transform: scale(1.05); }
         .avatar-card img {
             width: 260px;
             height: 260px;
@@ -319,7 +321,7 @@
             </div>
             <div class="button-group">
                 <button id="loadBtn">🚀 Загрузить</button>
-                <button id="saveNowBtn" class="warning-btn">💾 Сохранить</button>
+                <button id="saveNowBtn" class="warning-btn">💾 Сохранить в облако</button>
                 <button id="clearBtn" class="secondary-btn">🗑 Очистить</button>
             </div>
         </div>
@@ -348,7 +350,8 @@
     <div id="avatarsGrid" class="avatars-grid"></div>
 
     <div class="note">
-        💾 <strong>Синхронизация:</strong> Нажмите «Сохранить» после оценок — данные уйдут в Google таблицу.<br>
+        💾 <strong>Синхронизация:</strong> Нажмите «Сохранить в облако» после оценок — данные уйдут в Google таблицу.<br>
+        ❌ <strong>Крестик</strong> — полностью удаляет профиль из базы (после сохранения он исчезнет навсегда).<br>
         📱 <strong>На телефоне:</strong> Откройте этот же файл, выберите вуз, нажмите «Загрузить» — оценки подгрузятся.
     </div>
 </div>
@@ -363,11 +366,332 @@
         'sibupk': 'https://script.google.com/macros/s/AKfycbxYpa66_RmHbjOJBCl9ugc_1hVfm3SfCOdu4AqH1D6vcWgmgUeYRvNrxibLKS9CJVNFHQ/exec'
     };
 
-    // Предустановленные списки (сокращённо, полные версии есть в предыдущем сообщении)
+    // ============================================
+    // ПОЛНЫЕ СПИСКИ ССЫЛОК
+    // ============================================
     const PRESET_LISTS = {
-        ngau: `https://vk.com/id161163270\nhttps://vk.com/id176529250\nhttps://vk.com/id192261639`,
-        ngtu: `https://vk.com/id101151186\nhttps://vk.com/id167744453\nhttps://vk.com/id187317101`,
-        sibupk: `https://vk.com/id86255125\nhttps://vk.com/id142477678\nhttps://vk.com/id153567523`
+        ngau: `https://vk.com/id161163270
+https://vk.com/id176529250
+https://vk.com/id192261639
+https://vk.com/id193081706
+https://vk.com/id197451299
+https://vk.com/id203886034
+https://vk.com/id20394861
+https://vk.com/id228492760
+https://vk.com/id230374261
+https://vk.com/id238543078
+https://vk.com/id238830099
+https://vk.com/id243541646
+https://vk.com/id248660963
+https://vk.com/id261634078
+https://vk.com/id268325126
+https://vk.com/id276539784
+https://vk.com/id276629865
+https://vk.com/id277220668
+https://vk.com/id278600740
+https://vk.com/id284568027
+https://vk.com/id297326045
+https://vk.com/id311416865
+https://vk.com/id315392716
+https://vk.com/id322967271
+https://vk.com/id326169799
+https://vk.com/id328231276
+https://vk.com/id340532932
+https://vk.com/id349492112
+https://vk.com/id367794233
+https://vk.com/id370627314
+https://vk.com/id383091281
+https://vk.com/id398650831
+https://vk.com/id400033628
+https://vk.com/id400285057
+https://vk.com/id416872047
+https://vk.com/id438489854
+https://vk.com/id442673128
+https://vk.com/id448219973
+https://vk.com/id453929690
+https://vk.com/id455670898
+https://vk.com/id459439931
+https://vk.com/id470922508
+https://vk.com/id478347497
+https://vk.com/id481959163
+https://vk.com/id484306589
+https://vk.com/id491620975
+https://vk.com/id501058967
+https://vk.com/id501550671
+https://vk.com/id510196762
+https://vk.com/id512903919
+https://vk.com/id514727283
+https://vk.com/id539996416
+https://vk.com/id543131007
+https://vk.com/id552404097
+https://vk.com/id558346543
+https://vk.com/id580265474
+https://vk.com/id593978373
+https://vk.com/id604448008
+https://vk.com/id610797769
+https://vk.com/id694629344
+https://vk.com/id695325559
+https://vk.com/id705110800
+https://vk.com/id736142284
+https://vk.com/id876175471`,
+
+        ngtu: `https://vk.com/id101151186
+https://vk.com/id167744453
+https://vk.com/id187317101
+https://vk.com/id190744810
+https://vk.com/id191712600
+https://vk.com/id200376259
+https://vk.com/id219041911
+https://vk.com/id235917677
+https://vk.com/id23600947
+https://vk.com/id236970740
+https://vk.com/id241346013
+https://vk.com/id246895092
+https://vk.com/id247596187
+https://vk.com/id248556938
+https://vk.com/id250260395
+https://vk.com/id254414033
+https://vk.com/id255190075
+https://vk.com/id269924844
+https://vk.com/id274193480
+https://vk.com/id274814958
+https://vk.com/id277141717
+https://vk.com/id285117399
+https://vk.com/id286388005
+https://vk.com/id288160434
+https://vk.com/id297742035
+https://vk.com/id298863556
+https://vk.com/id299807601
+https://vk.com/id301081484
+https://vk.com/id301701444
+https://vk.com/id303292888
+https://vk.com/id305733885
+https://vk.com/id305842882
+https://vk.com/id311416865
+https://vk.com/id312230686
+https://vk.com/id317030614
+https://vk.com/id319573214
+https://vk.com/id319710912
+https://vk.com/id320204534
+https://vk.com/id320841249
+https://vk.com/id322446923
+https://vk.com/id323325043
+https://vk.com/id323937394
+https://vk.com/id324511736
+https://vk.com/id326114828
+https://vk.com/id327791291
+https://vk.com/id328671031
+https://vk.com/id334420745
+https://vk.com/id335522442
+https://vk.com/id336080304
+https://vk.com/id341393851
+https://vk.com/id341588989
+https://vk.com/id349073988
+https://vk.com/id349340831
+https://vk.com/id356511798
+https://vk.com/id364564926
+https://vk.com/id365159446
+https://vk.com/id367886381
+https://vk.com/id368055764
+https://vk.com/id371839553
+https://vk.com/id372008423
+https://vk.com/id373857920
+https://vk.com/id375622954
+https://vk.com/id376634075
+https://vk.com/id384877566
+https://vk.com/id387147073
+https://vk.com/id387384141
+https://vk.com/id388326637
+https://vk.com/id388874732
+https://vk.com/id392605102
+https://vk.com/id395759005
+https://vk.com/id396748306
+https://vk.com/id398287493
+https://vk.com/id401253147
+https://vk.com/id401584521
+https://vk.com/id407575790
+https://vk.com/id408414008
+https://vk.com/id410413031
+https://vk.com/id420870598
+https://vk.com/id426968806
+https://vk.com/id426981963
+https://vk.com/id431364371
+https://vk.com/id435847979
+https://vk.com/id441995978
+https://vk.com/id446223298
+https://vk.com/id453499644
+https://vk.com/id456958191
+https://vk.com/id457005084
+https://vk.com/id461366030
+https://vk.com/id466435666
+https://vk.com/id466479339
+https://vk.com/id467599659
+https://vk.com/id475821191
+https://vk.com/id476543902
+https://vk.com/id478944701
+https://vk.com/id480710180
+https://vk.com/id482289148
+https://vk.com/id482297455
+https://vk.com/id484896267
+https://vk.com/id489201643
+https://vk.com/id490265253
+https://vk.com/id494509869
+https://vk.com/id495544078
+https://vk.com/id497200177
+https://vk.com/id502770815
+https://vk.com/id503266039
+https://vk.com/id503567202
+https://vk.com/id504670784
+https://vk.com/id505798806
+https://vk.com/id506280515
+https://vk.com/id506413680
+https://vk.com/id507414156
+https://vk.com/id507804037
+https://vk.com/id511780599
+https://vk.com/id513086395
+https://vk.com/id514177042
+https://vk.com/id521401740
+https://vk.com/id526738819
+https://vk.com/id532559142
+https://vk.com/id535540122
+https://vk.com/id535851714
+https://vk.com/id552819548
+https://vk.com/id563654666
+https://vk.com/id580899919
+https://vk.com/id586339170
+https://vk.com/id589644451
+https://vk.com/id590200148
+https://vk.com/id597897183
+https://vk.com/id613143174
+https://vk.com/id616808169
+https://vk.com/id616836753
+https://vk.com/id623953612
+https://vk.com/id651719603
+https://vk.com/id653548003
+https://vk.com/id666610694
+https://vk.com/id697465530
+https://vk.com/id698928251
+https://vk.com/id711087982
+https://vk.com/id757699841
+https://vk.com/id817845538
+https://vk.com/id823166217`,
+
+        sibupk: `https://vk.com/id86255125
+https://vk.com/id142477678
+https://vk.com/id153567523
+https://vk.com/id154576173
+https://vk.com/id181330768
+https://vk.com/id184378627
+https://vk.com/id189466096
+https://vk.com/id202877201
+https://vk.com/id214799434
+https://vk.com/id217987402
+https://vk.com/id219265107
+https://vk.com/id223496558
+https://vk.com/id22505945
+https://vk.com/id246832486
+https://vk.com/id247984271
+https://vk.com/id259665326
+https://vk.com/id283174987
+https://vk.com/id286716317
+https://vk.com/id290050637
+https://vk.com/id290261964
+https://vk.com/id291433286
+https://vk.com/id297742035
+https://vk.com/id300251520
+https://vk.com/id304078058
+https://vk.com/id313374777
+https://vk.com/id319548165
+https://vk.com/id320927518
+https://vk.com/id326158804
+https://vk.com/id329556759
+https://vk.com/id332999651
+https://vk.com/id336211062
+https://vk.com/id344822644
+https://vk.com/id348306172
+https://vk.com/id348412421
+https://vk.com/id352405680
+https://vk.com/id356687112
+https://vk.com/id359755983
+https://vk.com/id361444566
+https://vk.com/id364304186
+https://vk.com/id373853639
+https://vk.com/id375719427
+https://vk.com/id388039930
+https://vk.com/id389847103
+https://vk.com/id396571537
+https://vk.com/id398648917
+https://vk.com/id401464536
+https://vk.com/id404475892
+https://vk.com/id413009276
+https://vk.com/id443437239
+https://vk.com/id445501780
+https://vk.com/id448720539
+https://vk.com/id453802934
+https://vk.com/id457178583
+https://vk.com/id467880753
+https://vk.com/id469631600
+https://vk.com/id471264175
+https://vk.com/id472258218
+https://vk.com/id472484198
+https://vk.com/id475441322
+https://vk.com/id478912139
+https://vk.com/id482593600
+https://vk.com/id484223080
+https://vk.com/id484737629
+https://vk.com/id486314996
+https://vk.com/id490693913
+https://vk.com/id492210858
+https://vk.com/id493197927
+https://vk.com/id496483190
+https://vk.com/id498303728
+https://vk.com/id499689508
+https://vk.com/id503878776
+https://vk.com/id506814817
+https://vk.com/id508275081
+https://vk.com/id508384576
+https://vk.com/id509057317
+https://vk.com/id515504426
+https://vk.com/id526231440
+https://vk.com/id527925082
+https://vk.com/id539303631
+https://vk.com/id540304617
+https://vk.com/id554809359
+https://vk.com/id558249475
+https://vk.com/id559159596
+https://vk.com/id561062186
+https://vk.com/id561457553
+https://vk.com/id566208874
+https://vk.com/id566975643
+https://vk.com/id567658787
+https://vk.com/id570265457
+https://vk.com/id575619876
+https://vk.com/id578078663
+https://vk.com/id578414164
+https://vk.com/id583149869
+https://vk.com/id584974972
+https://vk.com/id585829602
+https://vk.com/id587322310
+https://vk.com/id588703355
+https://vk.com/id589503508
+https://vk.com/id591907770
+https://vk.com/id592124110
+https://vk.com/id596701016
+https://vk.com/id601276845
+https://vk.com/id602180478
+https://vk.com/id606271062
+https://vk.com/id608138325
+https://vk.com/id610285707
+https://vk.com/id613692614
+https://vk.com/id616297598
+https://vk.com/id617327259
+https://vk.com/id625614161
+https://vk.com/id640624921
+https://vk.com/id657431298
+https://vk.com/id714028965
+https://vk.com/id746467276
+https://vk.com/id813766446
+https://vk.com/id866131876`
     };
 
     let currentUniv = 'ngau';
@@ -382,6 +706,7 @@
         { id: 'myRating', name: '🧠 Моя оценка', emoji: '🧠' }
     ];
 
+    // === Функции синхронизации ===
     async function saveToCloud() {
         const url = APPS_SCRIPT_URLS[currentUniv];
         if (!url) return;
@@ -390,12 +715,13 @@
         if (badge) badge.className = 'sync-status syncing';
         
         try {
-            const usersToSave = currentUsers.filter(u => u.user).map(u => ({
+            // Сохраняем ВСЕХ пользователей, включая удалённых (с флагом isDeleted = true)
+            const usersToSave = currentUsers.map(u => ({
                 link: u.link,
                 scores: u.scores,
                 totalRating: u.totalRating,
                 isFace: u.isFace,
-                isDeleted: u.isDeleted
+                isDeleted: u.isDeleted || false
             }));
             
             const params = new URLSearchParams();
@@ -435,7 +761,7 @@
                         scores: user.scores,
                         totalRating: user.totalRating,
                         isFace: user.isFace,
-                        isDeleted: user.isDeleted
+                        isDeleted: user.isDeleted || false
                     };
                 }
                 return ratings;
@@ -450,6 +776,7 @@
         const cloudRatings = await loadFromCloud();
         if (cloudRatings && currentUsers.length) {
             let loadedCount = 0;
+            let deletedCount = 0;
             for (const user of currentUsers) {
                 if (user.user && cloudRatings[user.link]) {
                     const cr = cloudRatings[user.link];
@@ -458,15 +785,17 @@
                     user.isFace = cr.isFace || false;
                     user.isDeleted = cr.isDeleted || false;
                     loadedCount++;
+                    if (user.isDeleted) deletedCount++;
                 }
             }
             renderUIFromData();
-            document.getElementById('status').innerHTML = `✅ Загружено из облака: ${loadedCount} оценок для ${currentUniv.toUpperCase()}`;
+            document.getElementById('status').innerHTML = `✅ Загружено из облака: ${loadedCount} оценок, из них ${deletedCount} удалённых для ${currentUniv.toUpperCase()}`;
             return true;
         }
         return false;
     }
 
+    // === Вспомогательные функции ===
     function calculateTotalRating(scores) {
         let sum = 0, count = 0;
         for (const c of CRITERIA) {
@@ -481,6 +810,14 @@
             if (!user.user) continue;
             const card = document.getElementById(user.elementId);
             if (!card) continue;
+            
+            // Обновляем отображение удалённого статуса
+            if (user.isDeleted) {
+                card.classList.add('deleted');
+            } else {
+                card.classList.remove('deleted');
+            }
+            
             for (const c of CRITERIA) {
                 const rating = user.scores[c.id] || 0;
                 const starsDiv = card.querySelector(`.stars-${c.id}`);
@@ -497,7 +834,7 @@
             if (user.totalRating >= 4.5) card.classList.add('top-rated');
             else if (user.totalRating >= 3.5) card.classList.add('high-rating');
             let badge = card.querySelector('.rank-badge');
-            if (user.totalRating > 0) {
+            if (user.totalRating > 0 && !user.isDeleted) {
                 if (!badge) { badge = document.createElement('div'); badge.className = 'rank-badge'; card.insertBefore(badge, card.firstChild); }
                 if (user.totalRating >= 4.5) badge.innerHTML = '👑 ТОП';
                 else if (user.totalRating >= 4) badge.innerHTML = `⭐ ${user.totalRating.toFixed(1)}`;
@@ -505,20 +842,32 @@
             } else if (badge) badge.remove();
             const cb = card.querySelector(`#chk_${user.elementId}`);
             if (cb) cb.checked = user.isFace;
-            if (user.isDeleted) card.style.display = 'none';
-            else card.style.display = 'block';
         }
         updateStats();
     }
 
     function updateStats() {
-        const visible = currentUsers.filter(u => !u.isDeleted);
+        const visible = currentUsers.filter(u => !u.isDeleted && u.user);
         const total = visible.length;
         const avg = total > 0 ? (visible.reduce((s,u) => s + u.totalRating, 0) / total).toFixed(1) : 0;
         const statsDiv = document.getElementById('statsText');
         if (statsDiv) statsDiv.innerHTML = `📊 Всего: ${total} | ⭐ Средний: ${avg}`;
         document.getElementById('listCounter').innerHTML = `📋 ${total} профилей`;
     }
+
+    // Удаление профиля (полное, с флагом isDeleted)
+    window.deleteAccount = (cardId) => {
+        const user = currentUsers.find(u => u.elementId === cardId);
+        if (user && user.user && !user.isDeleted) {
+            user.isDeleted = true;
+            const card = document.getElementById(cardId);
+            if (card) card.classList.add('deleted');
+            updateStats();
+            // Автоматически сохраняем в облако после удаления
+            saveToCloud();
+            document.getElementById('status').innerHTML = `🗑 Профиль удалён. Нажмите «Сохранить в облако», чтобы закрепить удаление.`;
+        }
+    };
 
     window.setCriterionRating = (cardId, criterionId, rating) => {
         const user = currentUsers.find(u => u.elementId === cardId);
@@ -554,25 +903,15 @@
         }
     };
 
-    window.deleteAccount = (cardId) => {
-        const user = currentUsers.find(u => u.elementId === cardId);
-        if (user && !user.isDeleted) {
-            user.isDeleted = true;
-            const card = document.getElementById(cardId);
-            if (card) card.style.display = 'none';
-            updateStats();
-        }
-    };
-
     window.toggleFace = (cardId, checked) => {
         const user = currentUsers.find(u => u.elementId === cardId);
-        if (user && user.user) {
+        if (user && user.user && !user.isDeleted) {
             user.isFace = checked;
         }
     };
 
     function sortAndRender() {
-        let sorted = [...currentUsers.filter(u => !u.isDeleted)];
+        let sorted = [...currentUsers.filter(u => !u.isDeleted && u.user)];
         if (currentSortMode === 'ratingDesc') sorted.sort((a,b) => (b.totalRating||0) - (a.totalRating||0));
         else if (currentSortMode === 'ratingAsc') sorted.sort((a,b) => (a.totalRating||0) - (b.totalRating||0));
         const grid = document.getElementById('avatarsGrid');
@@ -590,7 +929,8 @@
         for (const u of currentUsers) {
             const card = document.getElementById(u.elementId);
             if (!card) continue;
-            if (u.isDeleted) { card.style.display = 'none'; continue; }
+            if (u.isDeleted) { card.classList.add('deleted'); continue; }
+            else { card.classList.remove('deleted'); }
             let show = true;
             if (type === 'highRated') show = (u.totalRating||0) >= 3.5;
             else if (type === 'unrated') show = !u.totalRating || u.totalRating === 0;
@@ -605,6 +945,20 @@
         updateStats();
     }
 
+    function resetAllFaces() {
+        currentUsers.forEach(u => {
+            if (!u.isDeleted) {
+                u.isFace = false;
+                const card = document.getElementById(u.elementId);
+                if(card) {
+                    const cb = card.querySelector(`#chk_${u.elementId}`);
+                    if(cb) cb.checked = false;
+                }
+            }
+        });
+    }
+
+    // === VK API ===
     function extractTokenFromString(input) {
         if (!input) return null;
         let token = input.trim();
@@ -704,7 +1058,7 @@
         
         await syncFromCloud();
         
-        document.getElementById('status').innerHTML = `✅ Загружено ${usersArray.length} профилей. Нажмите «Сохранить», чтобы синхронизировать с облаком.`;
+        document.getElementById('status').innerHTML = `✅ Загружено ${usersArray.length} профилей. Нажмите «Сохранить в облако», чтобы синхронизировать.`;
     }
 
     async function loadAvatarsWithLinks(links) {
@@ -772,6 +1126,7 @@
         nextCardId = 0;
     }
 
+    // === Назначение обработчиков ===
     document.getElementById('loadBtn').onclick = loadAvatarsFromInput;
     document.getElementById('clearBtn').onclick = clearAll;
     document.getElementById('smartPasteBtn').onclick = smartPaste;
@@ -787,9 +1142,7 @@
     document.getElementById('showHighRatedBtn').onclick = () => applyFilter('highRated');
     document.getElementById('showUnratedBtn').onclick = () => applyFilter('unrated');
     document.getElementById('showFacesOnlyBtn').onclick = () => applyFilter('faces');
-    document.getElementById('resetFacesBtn').onclick = () => {
-        currentUsers.forEach(u => { u.isFace = false; const card = document.getElementById(u.elementId); if(card) { const cb = card.querySelector(`#chk_${u.elementId}`); if(cb) cb.checked = false; } });
-    };
+    document.getElementById('resetFacesBtn').onclick = resetAllFaces;
 </script>
 </body>
 </html>

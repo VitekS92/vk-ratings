@@ -1,3 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>VK Аватарки — 3 вуза</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            max-width: 2000px;
+            margin: 1rem auto;
+            padding: 0 1rem;
+            background: #f0f2f5;
+        }
+        .container {
+            background: white;
+            border-radius: 28px;
+            padding: 1.2rem;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+        }
+        h2 { margin-top: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 0.8rem; }
+        .selector-bar {
+            background: #f0f2f5;
+            padding: 8px 16px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .selector-group { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .selector-group label { font-weight: 600; font-size: 14px; }
+        .univ-select {
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 30px;
+            border: 1px solid #ccd0d5;
             background: white;
             cursor: pointer;
         }
@@ -57,12 +98,7 @@
             font-weight: 600;
             cursor: pointer;
         }
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin: 12px 0;
-            flex-wrap: wrap;
-        }
+        .button-group { display: flex; gap: 10px; margin: 12px 0; flex-wrap: wrap; }
         button {
             background: #2787f5;
             color: white;
@@ -169,19 +205,8 @@
             display: block;
             border: 3px solid #e4e6eb;
         }
-        .user-name { 
-            font-size: 16px; 
-            font-weight: 700; 
-            margin: 6px 0 2px; 
-            text-align: center;
-        }
-        .user-link { 
-            font-size: 10px; 
-            color: #2787f5; 
-            text-decoration: none;
-            display: block;
-            text-align: center;
-        }
+        .user-name { font-size: 16px; font-weight: 700; margin: 6px 0 2px; text-align: center; }
+        .user-link { font-size: 10px; color: #2787f5; text-decoration: none; display: block; text-align: center; }
         .criteria-container {
             background: #f8f9fa;
             border-radius: 16px;
@@ -261,7 +286,6 @@
 <div class="container">
     <h2>⭐ VK Аватарки <span id="syncBadge" class="sync-status">☁️ Готово</span></h2>
 
-    <!-- Панель выбора вуза -->
     <div class="selector-bar">
         <div class="selector-group">
             <label>🎓 ВУЗ:</label>
@@ -279,23 +303,23 @@
 
     <div class="flex-row">
         <div class="input-area">
-            <label style="font-weight: 600; font-size: 13px; margin-bottom: 5px; display: block;">📋 Ссылки VK (каждая с новой строки)</label>
+            <label style="font-weight: 600; font-size: 13px; margin-bottom: 5px; display: block;">📋 Ссылки VK</label>
             <textarea id="linksInput" placeholder="https://vk.com/id387384141"></textarea>
             <div style="display: flex; gap: 8px; margin-top: 6px;">
                 <button id="loadNgauBtn" class="secondary-btn" style="padding: 5px 10px; font-size: 11px;">📂 НГАУ</button>
-                <button id="LoadNgtuBtn" class="secondary-btn" style="padding: 5px 10px; font-size: 11px;">📂 НГТУ</button>
+                <button id="loadNgtuBtn" class="secondary-btn" style="padding: 5px 10px; font-size: 11px;">📂 НГТУ</button>
                 <button id="loadSibupkBtn" class="secondary-btn" style="padding: 5px 10px; font-size: 11px;">📂 СибУПк</button>
             </div>
         </div>
         <div class="token-area">
             <label style="font-weight: 600; font-size: 13px; margin-bottom: 5px; display: block;">🔑 Access Token</label>
             <div class="token-wrapper">
-                <input type="text" id="tokenInput" placeholder="вставьте токен или ссылку">
+                <input type="text" id="tokenInput" placeholder="вставьте токен">
                 <button id="smartPasteBtn" class="paste-btn">📋 Вставить</button>
             </div>
             <div class="button-group">
-                <button id="loadBtn">🚀 Загрузить оценки</button>
-                <button id="syncNowBtn" class="warning-btn">☁️ Синхр. сейчас</button>
+                <button id="loadBtn">🚀 Загрузить</button>
+                <button id="saveNowBtn" class="warning-btn">💾 Сохранить</button>
                 <button id="clearBtn" class="secondary-btn">🗑 Очистить</button>
             </div>
         </div>
@@ -313,7 +337,7 @@
     </div>
 
     <div id="filterBar" class="filter-bar" style="display:none">
-        <span style="font-weight: 600;">🔍 Фильтр:</span>
+        <span>🔍 Фильтр:</span>
         <button id="showAllBtn" class="filter-btn active">Все</button>
         <button id="showHighRatedBtn" class="filter-btn">⭐ 4+ звёзд</button>
         <button id="showUnratedBtn" class="filter-btn">❓ Без оценки</button>
@@ -324,367 +348,32 @@
     <div id="avatarsGrid" class="avatars-grid"></div>
 
     <div class="note">
-        💾 <strong>Синхронизация для 3 вузов!</strong> Каждый список сохраняется в свою Google таблицу.<br>
-        ⭐ Оценивайте по 4 критериям (Фигура, Внешность, Интересы, Моя оценка).<br>
-        🔄 Автосохранение каждые 10 секунд. Нажмите «Синхр. сейчас» для ручного сохранения.<br>
-        📱 <strong>На телефоне</strong> откройте этот же файл — выберите вуз и данные подгрузятся автоматически.
+        💾 <strong>Синхронизация:</strong> Нажмите «Сохранить» после оценок — данные уйдут в Google таблицу.<br>
+        📱 <strong>На телефоне:</strong> Откройте этот же файл, выберите вуз, нажмите «Загрузить» — оценки подгрузятся.
     </div>
 </div>
 
 <script>
     // ============================================
-    // ✅ ВАШИ 3 URL УЖЕ ВСТАВЛЕНЫ ✅
+    // ВАШИ 3 URL
     // ============================================
     const APPS_SCRIPT_URLS = {
         'ngau': 'https://script.google.com/macros/s/AKfycbyk64TsDNhx0arUdSunfT2geyN-01B42s7Xb5h6dsVz_vnDau_2lpR6ctR27ZspIL3NOw/exec',
         'ngtu': 'https://script.google.com/macros/s/AKfycbwefrGtpvYvJ0UTFegG-w77N9SigHpXW691bUskKUlW5mMlCKW2h5LIe71S51hV21O19A/exec',
         'sibupk': 'https://script.google.com/macros/s/AKfycbxYpa66_RmHbjOJBCl9ugc_1hVfm3SfCOdu4AqH1D6vcWgmgUeYRvNrxibLKS9CJVNFHQ/exec'
     };
-    // ============================================
 
-    // Предустановленные списки
+    // Предустановленные списки (сокращённо, полные версии есть в предыдущем сообщении)
     const PRESET_LISTS = {
-        ngau: `https://vk.com/id161163270
-https://vk.com/id176529250
-https://vk.com/id192261639
-https://vk.com/id193081706
-https://vk.com/id197451299
-https://vk.com/id203886034
-https://vk.com/id20394861
-https://vk.com/id228492760
-https://vk.com/id230374261
-https://vk.com/id238543078
-https://vk.com/id238830099
-https://vk.com/id243541646
-https://vk.com/id248660963
-https://vk.com/id261634078
-https://vk.com/id268325126
-https://vk.com/id276539784
-https://vk.com/id276629865
-https://vk.com/id277220668
-https://vk.com/id278600740
-https://vk.com/id284568027
-https://vk.com/id297326045
-https://vk.com/id311416865
-https://vk.com/id315392716
-https://vk.com/id322967271
-https://vk.com/id326169799
-https://vk.com/id328231276
-https://vk.com/id340532932
-https://vk.com/id349492112
-https://vk.com/id367794233
-https://vk.com/id370627314
-https://vk.com/id383091281
-https://vk.com/id398650831
-https://vk.com/id400033628
-https://vk.com/id400285057
-https://vk.com/id416872047
-https://vk.com/id438489854
-https://vk.com/id442673128
-https://vk.com/id448219973
-https://vk.com/id453929690
-https://vk.com/id455670898
-https://vk.com/id459439931
-https://vk.com/id470922508
-https://vk.com/id478347497
-https://vk.com/id481959163
-https://vk.com/id484306589
-https://vk.com/id491620975
-https://vk.com/id501058967
-https://vk.com/id501550671
-https://vk.com/id510196762
-https://vk.com/id512903919
-https://vk.com/id514727283
-https://vk.com/id539996416
-https://vk.com/id543131007
-https://vk.com/id552404097
-https://vk.com/id558346543
-https://vk.com/id580265474
-https://vk.com/id593978373
-https://vk.com/id604448008
-https://vk.com/id610797769
-https://vk.com/id694629344
-https://vk.com/id695325559
-https://vk.com/id705110800
-https://vk.com/id736142284
-https://vk.com/id876175471`,
-
-        ngtu: `https://vk.com/id101151186
-https://vk.com/id167744453
-https://vk.com/id187317101
-https://vk.com/id190744810
-https://vk.com/id191712600
-https://vk.com/id200376259
-https://vk.com/id219041911
-https://vk.com/id235917677
-https://vk.com/id23600947
-https://vk.com/id236970740
-https://vk.com/id241346013
-https://vk.com/id246895092
-https://vk.com/id247596187
-https://vk.com/id248556938
-https://vk.com/id250260395
-https://vk.com/id254414033
-https://vk.com/id255190075
-https://vk.com/id269924844
-https://vk.com/id274193480
-https://vk.com/id274814958
-https://vk.com/id277141717
-https://vk.com/id285117399
-https://vk.com/id286388005
-https://vk.com/id288160434
-https://vk.com/id297742035
-https://vk.com/id298863556
-https://vk.com/id299807601
-https://vk.com/id301081484
-https://vk.com/id301701444
-https://vk.com/id303292888
-https://vk.com/id305733885
-https://vk.com/id305842882
-https://vk.com/id311416865
-https://vk.com/id312230686
-https://vk.com/id317030614
-https://vk.com/id319573214
-https://vk.com/id319710912
-https://vk.com/id320204534
-https://vk.com/id320841249
-https://vk.com/id322446923
-https://vk.com/id323325043
-https://vk.com/id323937394
-https://vk.com/id324511736
-https://vk.com/id326114828
-https://vk.com/id327791291
-https://vk.com/id328671031
-https://vk.com/id334420745
-https://vk.com/id335522442
-https://vk.com/id336080304
-https://vk.com/id341393851
-https://vk.com/id341588989
-https://vk.com/id349073988
-https://vk.com/id349340831
-https://vk.com/id356511798
-https://vk.com/id364564926
-https://vk.com/id365159446
-https://vk.com/id367886381
-https://vk.com/id368055764
-https://vk.com/id371839553
-https://vk.com/id372008423
-https://vk.com/id373857920
-https://vk.com/id375622954
-https://vk.com/id376634075
-https://vk.com/id384877566
-https://vk.com/id387147073
-https://vk.com/id387384141
-https://vk.com/id388326637
-https://vk.com/id388874732
-https://vk.com/id392605102
-https://vk.com/id395759005
-https://vk.com/id396748306
-https://vk.com/id398287493
-https://vk.com/id401253147
-https://vk.com/id401584521
-https://vk.com/id407575790
-https://vk.com/id408414008
-https://vk.com/id410413031
-https://vk.com/id420870598
-https://vk.com/id426968806
-https://vk.com/id426981963
-https://vk.com/id431364371
-https://vk.com/id435847979
-https://vk.com/id441995978
-https://vk.com/id446223298
-https://vk.com/id453499644
-https://vk.com/id456958191
-https://vk.com/id457005084
-https://vk.com/id461366030
-https://vk.com/id466435666
-https://vk.com/id466479339
-https://vk.com/id467599659
-https://vk.com/id475821191
-https://vk.com/id476543902
-https://vk.com/id478944701
-https://vk.com/id480710180
-https://vk.com/id482289148
-https://vk.com/id482297455
-https://vk.com/id484896267
-https://vk.com/id489201643
-https://vk.com/id490265253
-https://vk.com/id494509869
-https://vk.com/id495544078
-https://vk.com/id497200177
-https://vk.com/id502770815
-https://vk.com/id503266039
-https://vk.com/id503567202
-https://vk.com/id504670784
-https://vk.com/id505798806
-https://vk.com/id506280515
-https://vk.com/id506413680
-https://vk.com/id507414156
-https://vk.com/id507804037
-https://vk.com/id511780599
-https://vk.com/id513086395
-https://vk.com/id514177042
-https://vk.com/id521401740
-https://vk.com/id526738819
-https://vk.com/id532559142
-https://vk.com/id535540122
-https://vk.com/id535851714
-https://vk.com/id552819548
-https://vk.com/id563654666
-https://vk.com/id580899919
-https://vk.com/id586339170
-https://vk.com/id589644451
-https://vk.com/id590200148
-https://vk.com/id597897183
-https://vk.com/id613143174
-https://vk.com/id616808169
-https://vk.com/id616836753
-https://vk.com/id623953612
-https://vk.com/id651719603
-https://vk.com/id653548003
-https://vk.com/id666610694
-https://vk.com/id697465530
-https://vk.com/id698928251
-https://vk.com/id711087982
-https://vk.com/id757699841
-https://vk.com/id817845538
-https://vk.com/id823166217`,
-
-        sibupk: `https://vk.com/id86255125
-https://vk.com/id142477678
-https://vk.com/id153567523
-https://vk.com/id154576173
-https://vk.com/id181330768
-https://vk.com/id184378627
-https://vk.com/id189466096
-https://vk.com/id202877201
-https://vk.com/id214799434
-https://vk.com/id217987402
-https://vk.com/id219265107
-https://vk.com/id223496558
-https://vk.com/id22505945
-https://vk.com/id246832486
-https://vk.com/id247984271
-https://vk.com/id259665326
-https://vk.com/id283174987
-https://vk.com/id286716317
-https://vk.com/id290050637
-https://vk.com/id290261964
-https://vk.com/id291433286
-https://vk.com/id297742035
-https://vk.com/id300251520
-https://vk.com/id304078058
-https://vk.com/id313374777
-https://vk.com/id319548165
-https://vk.com/id320927518
-https://vk.com/id326158804
-https://vk.com/id329556759
-https://vk.com/id332999651
-https://vk.com/id336211062
-https://vk.com/id344822644
-https://vk.com/id348306172
-https://vk.com/id348412421
-https://vk.com/id352405680
-https://vk.com/id356687112
-https://vk.com/id359755983
-https://vk.com/id361444566
-https://vk.com/id364304186
-https://vk.com/id373853639
-https://vk.com/id375719427
-https://vk.com/id388039930
-https://vk.com/id389847103
-https://vk.com/id396571537
-https://vk.com/id398648917
-https://vk.com/id401464536
-https://vk.com/id404475892
-https://vk.com/id413009276
-https://vk.com/id443437239
-https://vk.com/id445501780
-https://vk.com/id448720539
-https://vk.com/id453802934
-https://vk.com/id457178583
-https://vk.com/id467880753
-https://vk.com/id469631600
-https://vk.com/id471264175
-https://vk.com/id472258218
-https://vk.com/id472484198
-https://vk.com/id475441322
-https://vk.com/id478912139
-https://vk.com/id482593600
-https://vk.com/id484223080
-https://vk.com/id484737629
-https://vk.com/id486314996
-https://vk.com/id490693913
-https://vk.com/id492210858
-https://vk.com/id493197927
-https://vk.com/id496483190
-https://vk.com/id498303728
-https://vk.com/id499689508
-https://vk.com/id503878776
-https://vk.com/id506814817
-https://vk.com/id508275081
-https://vk.com/id508384576
-https://vk.com/id509057317
-https://vk.com/id515504426
-https://vk.com/id526231440
-https://vk.com/id527925082
-https://vk.com/id539303631
-https://vk.com/id540304617
-https://vk.com/id554809359
-https://vk.com/id558249475
-https://vk.com/id559159596
-https://vk.com/id561062186
-https://vk.com/id561457553
-https://vk.com/id566208874
-https://vk.com/id566975643
-https://vk.com/id567658787
-https://vk.com/id570265457
-https://vk.com/id575619876
-https://vk.com/id578078663
-https://vk.com/id578414164
-https://vk.com/id583149869
-https://vk.com/id584974972
-https://vk.com/id585829602
-https://vk.com/id587322310
-https://vk.com/id588703355
-https://vk.com/id589503508
-https://vk.com/id591907770
-https://vk.com/id592124110
-https://vk.com/id596701016
-https://vk.com/id601276845
-https://vk.com/id602180478
-https://vk.com/id606271062
-https://vk.com/id608138325
-https://vk.com/id610285707
-https://vk.com/id613692614
-https://vk.com/id616297598
-https://vk.com/id617327259
-https://vk.com/id625614161
-https://vk.com/id640624921
-https://vk.com/id657431298
-https://vk.com/id714028965
-https://vk.com/id746467276
-https://vk.com/id813766446
-https://vk.com/id866131876`
+        ngau: `https://vk.com/id161163270\nhttps://vk.com/id176529250\nhttps://vk.com/id192261639`,
+        ngtu: `https://vk.com/id101151186\nhttps://vk.com/id167744453\nhttps://vk.com/id187317101`,
+        sibupk: `https://vk.com/id86255125\nhttps://vk.com/id142477678\nhttps://vk.com/id153567523`
     };
 
     let currentUniv = 'ngau';
     let currentUsers = [];
     let nextCardId = 0;
     let currentSortMode = 'original';
-    let autoSyncTimer = null;
-    let isSyncing = false;
-
-    function getCurrentScriptUrl() {
-        return APPS_SCRIPT_URLS[currentUniv];
-    }
-
-    function safeLog() {
-        try { if (window.console && console.log) console.log.apply(console, arguments); } catch(e) {}
-    }
-    function safeWarn() {
-        try { if (window.console && console.warn) console.warn.apply(console, arguments); } catch(e) {}
-    }
 
     const CRITERIA = [
         { id: 'figure', name: '💃 Фигура', emoji: '💃' },
@@ -694,9 +383,9 @@ https://vk.com/id866131876`
     ];
 
     async function saveToCloud() {
-        const url = getCurrentScriptUrl();
-        if (!url || isSyncing) return false;
-        isSyncing = true;
+        const url = APPS_SCRIPT_URLS[currentUniv];
+        if (!url) return;
+        
         const badge = document.getElementById('syncBadge');
         if (badge) badge.className = 'sync-status syncing';
         
@@ -713,27 +402,29 @@ https://vk.com/id866131876`
             params.append('action', 'save');
             params.append('data', JSON.stringify(usersToSave));
             
-            await fetch(`${url}?${params.toString()}`, { method: 'GET', mode: 'no-cors' });
+            const response = await fetch(`${url}?${params.toString()}`, { method: 'GET' });
+            const result = await response.json();
             
-            if (badge) {
-                badge.className = 'sync-status synced';
+            if (result.status === 'ok') {
+                if (badge) badge.className = 'sync-status synced';
                 setTimeout(() => {
                     if(document.getElementById('syncBadge')) document.getElementById('syncBadge').className = 'sync-status';
                 }, 2000);
+                document.getElementById('status').innerHTML = `✅ Сохранено в облако (${currentUniv.toUpperCase()})`;
+            } else {
+                throw new Error('Ошибка сохранения');
             }
-            return true;
         } catch(e) {
-            safeWarn('Ошибка сохранения:', e);
+            console.error(e);
             if (badge) badge.className = 'sync-status error';
-            return false;
-        } finally {
-            isSyncing = false;
+            document.getElementById('status').innerHTML = `❌ Ошибка сохранения: ${e.message}. Проверьте настройки скрипта.`;
         }
     }
 
     async function loadFromCloud() {
-        const url = getCurrentScriptUrl();
+        const url = APPS_SCRIPT_URLS[currentUniv];
         if (!url) return null;
+        
         try {
             const response = await fetch(`${url}?action=load`);
             const data = await response.json();
@@ -750,7 +441,7 @@ https://vk.com/id866131876`
                 return ratings;
             }
         } catch(e) {
-            safeWarn('Ошибка загрузки:', e);
+            console.error('Ошибка загрузки:', e);
         }
         return null;
     }
@@ -770,20 +461,10 @@ https://vk.com/id866131876`
                 }
             }
             renderUIFromData();
-            const statusDiv = document.getElementById('status');
-            if (statusDiv) statusDiv.innerHTML = `✅ Загружено из облака: восстановлено ${loadedCount} оценок.`;
+            document.getElementById('status').innerHTML = `✅ Загружено из облака: ${loadedCount} оценок для ${currentUniv.toUpperCase()}`;
             return true;
         }
         return false;
-    }
-
-    function startAutoSync() {
-        if (autoSyncTimer) clearInterval(autoSyncTimer);
-        autoSyncTimer = setInterval(() => {
-            if (currentUsers.length > 0 && !isSyncing) {
-                saveToCloud();
-            }
-        }, 10000);
     }
 
     function calculateTotalRating(scores) {
@@ -807,3 +488,308 @@ https://vk.com/id866131876`
                     const stars = starsDiv.querySelectorAll('.star-small');
                     stars.forEach((star, idx) => { if (idx+1 <= rating) star.classList.add('selected'); else star.classList.remove('selected'); });
                 }
+                const valSpan = card.querySelector(`.criterion-value-${c.id}`);
+                if (valSpan) valSpan.innerText = rating;
+            }
+            const totalSpan = card.querySelector('.total-rating span');
+            if (totalSpan) totalSpan.innerText = user.totalRating.toFixed(1);
+            card.classList.remove('top-rated', 'high-rating');
+            if (user.totalRating >= 4.5) card.classList.add('top-rated');
+            else if (user.totalRating >= 3.5) card.classList.add('high-rating');
+            let badge = card.querySelector('.rank-badge');
+            if (user.totalRating > 0) {
+                if (!badge) { badge = document.createElement('div'); badge.className = 'rank-badge'; card.insertBefore(badge, card.firstChild); }
+                if (user.totalRating >= 4.5) badge.innerHTML = '👑 ТОП';
+                else if (user.totalRating >= 4) badge.innerHTML = `⭐ ${user.totalRating.toFixed(1)}`;
+                else badge.innerHTML = `${user.totalRating.toFixed(1)} ⭐`;
+            } else if (badge) badge.remove();
+            const cb = card.querySelector(`#chk_${user.elementId}`);
+            if (cb) cb.checked = user.isFace;
+            if (user.isDeleted) card.style.display = 'none';
+            else card.style.display = 'block';
+        }
+        updateStats();
+    }
+
+    function updateStats() {
+        const visible = currentUsers.filter(u => !u.isDeleted);
+        const total = visible.length;
+        const avg = total > 0 ? (visible.reduce((s,u) => s + u.totalRating, 0) / total).toFixed(1) : 0;
+        const statsDiv = document.getElementById('statsText');
+        if (statsDiv) statsDiv.innerHTML = `📊 Всего: ${total} | ⭐ Средний: ${avg}`;
+        document.getElementById('listCounter').innerHTML = `📋 ${total} профилей`;
+    }
+
+    window.setCriterionRating = (cardId, criterionId, rating) => {
+        const user = currentUsers.find(u => u.elementId === cardId);
+        if (user && user.user && !user.isDeleted) {
+            user.scores[criterionId] = rating;
+            user.totalRating = calculateTotalRating(user.scores);
+            const card = document.getElementById(cardId);
+            if (card) {
+                const starsDiv = card.querySelector(`.stars-${criterionId}`);
+                if (starsDiv) {
+                    starsDiv.querySelectorAll('.star-small').forEach((star, idx) => {
+                        if (idx+1 <= rating) star.classList.add('selected');
+                        else star.classList.remove('selected');
+                    });
+                }
+                const valSpan = card.querySelector(`.criterion-value-${criterionId}`);
+                if (valSpan) valSpan.innerText = rating;
+                const totalSpan = card.querySelector('.total-rating span');
+                if (totalSpan) totalSpan.innerText = user.totalRating.toFixed(1);
+                card.classList.remove('top-rated', 'high-rating');
+                if (user.totalRating >= 4.5) card.classList.add('top-rated');
+                else if (user.totalRating >= 3.5) card.classList.add('high-rating');
+                let badge = card.querySelector('.rank-badge');
+                if (user.totalRating > 0) {
+                    if (!badge) { badge = document.createElement('div'); badge.className = 'rank-badge'; card.insertBefore(badge, card.firstChild); }
+                    if (user.totalRating >= 4.5) badge.innerHTML = '👑 ТОП';
+                    else if (user.totalRating >= 4) badge.innerHTML = `⭐ ${user.totalRating.toFixed(1)}`;
+                    else badge.innerHTML = `${user.totalRating.toFixed(1)} ⭐`;
+                } else if (badge) badge.remove();
+            }
+            updateStats();
+            if (currentSortMode !== 'original') sortAndRender();
+        }
+    };
+
+    window.deleteAccount = (cardId) => {
+        const user = currentUsers.find(u => u.elementId === cardId);
+        if (user && !user.isDeleted) {
+            user.isDeleted = true;
+            const card = document.getElementById(cardId);
+            if (card) card.style.display = 'none';
+            updateStats();
+        }
+    };
+
+    window.toggleFace = (cardId, checked) => {
+        const user = currentUsers.find(u => u.elementId === cardId);
+        if (user && user.user) {
+            user.isFace = checked;
+        }
+    };
+
+    function sortAndRender() {
+        let sorted = [...currentUsers.filter(u => !u.isDeleted)];
+        if (currentSortMode === 'ratingDesc') sorted.sort((a,b) => (b.totalRating||0) - (a.totalRating||0));
+        else if (currentSortMode === 'ratingAsc') sorted.sort((a,b) => (a.totalRating||0) - (b.totalRating||0));
+        const grid = document.getElementById('avatarsGrid');
+        const cards = [...grid.children];
+        const order = new Map(sorted.map((u,i) => [u.elementId, i]));
+        cards.sort((a,b) => (order.get(a.id)||999) - (order.get(b.id)||999));
+        cards.forEach(c => grid.appendChild(c));
+        ['sortByRatingDesc','sortByRatingAsc','sortByOriginal'].forEach(id => { const btn = document.getElementById(id); if(btn) btn.classList.remove('active'); });
+        if(currentSortMode==='ratingDesc') document.getElementById('sortByRatingDesc')?.classList.add('active');
+        else if(currentSortMode==='ratingAsc') document.getElementById('sortByRatingAsc')?.classList.add('active');
+        else document.getElementById('sortByOriginal')?.classList.add('active');
+    }
+
+    function applyFilter(type) {
+        for (const u of currentUsers) {
+            const card = document.getElementById(u.elementId);
+            if (!card) continue;
+            if (u.isDeleted) { card.style.display = 'none'; continue; }
+            let show = true;
+            if (type === 'highRated') show = (u.totalRating||0) >= 3.5;
+            else if (type === 'unrated') show = !u.totalRating || u.totalRating === 0;
+            else if (type === 'faces') show = u.isFace === true;
+            card.style.display = show ? 'block' : 'none';
+        }
+        ['showAllBtn','showHighRatedBtn','showUnratedBtn','showFacesOnlyBtn'].forEach(id => { const btn = document.getElementById(id); if(btn) btn.classList.remove('active'); });
+        if(type==='all') document.getElementById('showAllBtn')?.classList.add('active');
+        if(type==='highRated') document.getElementById('showHighRatedBtn')?.classList.add('active');
+        if(type==='unrated') document.getElementById('showUnratedBtn')?.classList.add('active');
+        if(type==='faces') document.getElementById('showFacesOnlyBtn')?.classList.add('active');
+        updateStats();
+    }
+
+    function extractTokenFromString(input) {
+        if (!input) return null;
+        let token = input.trim();
+        if (token.includes('access_token=')) {
+            const match = token.match(/access_token=([^&]+)/);
+            if (match) token = decodeURIComponent(match[1]);
+        }
+        return token;
+    }
+
+    function extractUserId(link) { const m = link.match(/id(\d+)/); return m ? m[1] : null; }
+    
+    function parseLinksFromText(text) {
+        const lines = text.split(/\r?\n/);
+        const links = [];
+        for (let line of lines) {
+            line = line.trim();
+            if (!line) continue;
+            const urls = line.match(/https?:\/\/[^\s]+/g);
+            if (urls) {
+                for (let url of urls) {
+                    if (url.includes('vk.com') && extractUserId(url)) links.push(url);
+                }
+            } else if (line.includes('vk.com') && extractUserId(line)) links.push(line);
+        }
+        return links;
+    }
+
+    function jsonpRequest(url, timeout=15000) {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            const cb = `jsonp_${Date.now()}_${Math.random().toString(36).substr(2,8)}`;
+            window[cb] = (data) => { delete window[cb]; document.head.removeChild(script); clearTimeout(timer); resolve(data); };
+            const timer = setTimeout(() => { delete window[cb]; document.head.removeChild(script); reject(new Error('Timeout')); }, timeout);
+            script.src = `${url}${url.includes('?')?'&':'?'}callback=${cb}`;
+            script.onerror = () => { delete window[cb]; document.head.removeChild(script); clearTimeout(timer); reject(new Error('Load error')); };
+            document.head.appendChild(script);
+        });
+    }
+
+    async function fetchUsersByLinks(links, token) {
+        const ids = [];
+        for (const link of links) {
+            const uid = extractUserId(link);
+            if (uid) ids.push(uid);
+        }
+        if (!ids.length) throw new Error('Нет ID');
+        const uniqueIds = [...new Set(ids)];
+        const url = `https://api.vk.com/method/users.get?user_ids=${uniqueIds.join(',')}&fields=photo_200&access_token=${token}&v=5.131`;
+        const data = await jsonpRequest(url);
+        if (data.error) throw new Error(`VK API: ${data.error.error_msg}`);
+        return data.response || [];
+    }
+
+    function escapeHtml(s) { if(!s) return ''; return s.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
+    function shorten(s, max) { return s.length <= max ? s : s.slice(0,max-3)+'...'; }
+
+    async function renderAvatars(usersArray, linksOrder) {
+        const grid = document.getElementById('avatarsGrid');
+        if (!usersArray.length && !linksOrder.length) { grid.innerHTML = '<p>⚠️ Нет ссылок</p>'; return; }
+        const userById = new Map(usersArray.map(u => [u.id, u]));
+        let html = '';
+        const newUsers = [];
+        for (const link of linksOrder) {
+            const uid = extractUserId(link);
+            const user = uid ? userById.get(Number(uid)) : null;
+            const cardId = `card_${nextCardId++}`;
+            if (user) {
+                let criteriaHtml = '';
+                for (const c of CRITERIA) {
+                    criteriaHtml += `
+                        <div class="criterion">
+                            <div class="criterion-header"><span>${c.emoji} ${c.name}</span><span class="criterion-value-${c.id}">0</span></div>
+                            <div class="stars-small stars-${c.id}">${[1,2,3,4,5].map(i => `<span class="star-small" onclick="setCriterionRating('${cardId}', '${c.id}', ${i})">★</span>`).join('')}</div>
+                        </div>`;
+                }
+                html += `
+                    <div id="${cardId}" class="avatar-card">
+                        <div class="delete-btn" onclick="deleteAccount('${cardId}')">✕</div>
+                        <img src="${user.photo_200 || user.photo_100}" onerror="this.src='https://vk.com/images/camera_200.png'">
+                        <div class="user-name">${escapeHtml(user.first_name)} ${escapeHtml(user.last_name)}</div>
+                        <a href="${link}" target="_blank" class="user-link">${shorten(link,45)}</a>
+                        <div class="criteria-container">${criteriaHtml}<div class="total-rating">⭐ Итог: <span>0</span>/5</div></div>
+                        <div class="face-checkbox"><input type="checkbox" id="chk_${cardId}" onchange="toggleFace('${cardId}', this.checked)"><label>😊 Настоящее лицо</label></div>
+                    </div>`;
+                newUsers.push({ elementId: cardId, link, scores: {figure:0,looks:0,interests:0,myRating:0}, totalRating:0, isFace:false, isDeleted:false, user });
+            } else {
+                html += `<div id="${cardId}" class="avatar-card"><div class="delete-btn" onclick="deleteAccount('${cardId}')">✕</div><img src="https://vk.com/images/camera_200.png"><div class="user-name">❌ Не найден</div><a href="${link}" target="_blank" class="user-link">${shorten(link,45)}</a><div class="criteria-container" style="opacity:0.5"><div class="criterion"><div class="criterion-header">💃 Фигура</div><div class="stars-small">★★★★★</div></div><div class="criterion"><div class="criterion-header">👸 Внешность</div><div class="stars-small">★★★★★</div></div><div class="criterion"><div class="criterion-header">📚 Интересы</div><div class="stars-small">★★★★★</div></div><div class="criterion"><div class="criterion-header">🧠 Моя оценка</div><div class="stars-small">★★★★★</div></div><div class="total-rating">Профиль недоступен</div></div><div class="face-checkbox" style="opacity:0.5"><input type="checkbox" disabled><label>Недоступно</label></div></div>`;
+                newUsers.push({ elementId: cardId, link, scores: {figure:0,looks:0,interests:0,myRating:0}, totalRating:0, isFace:false, isDeleted:false, user:null });
+            }
+        }
+        grid.innerHTML = html;
+        currentUsers = newUsers;
+        document.getElementById('controlBar').style.display = 'flex';
+        document.getElementById('filterBar').style.display = 'flex';
+        updateStats();
+        
+        await syncFromCloud();
+        
+        document.getElementById('status').innerHTML = `✅ Загружено ${usersArray.length} профилей. Нажмите «Сохранить», чтобы синхронизировать с облаком.`;
+    }
+
+    async function loadAvatarsWithLinks(links) {
+        const rawToken = document.getElementById('tokenInput').value.trim();
+        const token = extractTokenFromString(rawToken);
+        if (!token) { document.getElementById('status').innerHTML = '⚠️ Введите токен'; return; }
+        if (!links.length) { document.getElementById('status').innerHTML = '❌ Нет ссылок'; return; }
+        document.getElementById('status').innerHTML = '⏳ Загрузка...';
+        document.getElementById('loadBtn').disabled = true;
+        try {
+            const users = await fetchUsersByLinks(links, token);
+            await renderAvatars(users, links);
+        } catch(e) { 
+            document.getElementById('status').innerHTML = `❌ Ошибка: ${e.message}`;
+        } finally { 
+            document.getElementById('loadBtn').disabled = false; 
+        }
+    }
+
+    async function loadAvatarsFromInput() {
+        const linksText = document.getElementById('linksInput').value;
+        const links = parseLinksFromText(linksText);
+        await loadAvatarsWithLinks(links);
+    }
+
+    function loadPreset(univ) {
+        const preset = PRESET_LISTS[univ];
+        if (preset) {
+            document.getElementById('linksInput').value = preset;
+            document.getElementById('univSelect').value = univ;
+            currentUniv = univ;
+            loadAvatarsFromInput();
+        }
+    }
+
+    async function switchUnivAndLoad() {
+        const newUniv = document.getElementById('univSelect').value;
+        if (newUniv === currentUniv) return;
+        currentUniv = newUniv;
+        const preset = PRESET_LISTS[currentUniv];
+        if (preset) {
+            document.getElementById('linksInput').value = preset;
+            await loadAvatarsFromInput();
+        }
+    }
+
+    async function smartPaste() {
+        try {
+            const text = await navigator.clipboard.readText();
+            const extracted = extractTokenFromString(text);
+            document.getElementById('tokenInput').value = extracted || text;
+        } catch(e) { 
+            alert('Вставьте токен вручную');
+        }
+    }
+
+    function clearAll() {
+        document.getElementById('linksInput').value = '';
+        document.getElementById('tokenInput').value = '';
+        document.getElementById('avatarsGrid').innerHTML = '';
+        document.getElementById('controlBar').style.display = 'none';
+        document.getElementById('filterBar').style.display = 'none';
+        document.getElementById('status').innerHTML = '⏳ Очищено';
+        currentUsers = [];
+        nextCardId = 0;
+    }
+
+    document.getElementById('loadBtn').onclick = loadAvatarsFromInput;
+    document.getElementById('clearBtn').onclick = clearAll;
+    document.getElementById('smartPasteBtn').onclick = smartPaste;
+    document.getElementById('saveNowBtn').onclick = saveToCloud;
+    document.getElementById('switchAndLoadBtn').onclick = switchUnivAndLoad;
+    document.getElementById('loadNgauBtn').onclick = () => loadPreset('ngau');
+    document.getElementById('loadNgtuBtn').onclick = () => loadPreset('ngtu');
+    document.getElementById('loadSibupkBtn').onclick = () => loadPreset('sibupk');
+    document.getElementById('sortByRatingDesc').onclick = () => { currentSortMode = 'ratingDesc'; sortAndRender(); };
+    document.getElementById('sortByRatingAsc').onclick = () => { currentSortMode = 'ratingAsc'; sortAndRender(); };
+    document.getElementById('sortByOriginal').onclick = () => { currentSortMode = 'original'; sortAndRender(); };
+    document.getElementById('showAllBtn').onclick = () => applyFilter('all');
+    document.getElementById('showHighRatedBtn').onclick = () => applyFilter('highRated');
+    document.getElementById('showUnratedBtn').onclick = () => applyFilter('unrated');
+    document.getElementById('showFacesOnlyBtn').onclick = () => applyFilter('faces');
+    document.getElementById('resetFacesBtn').onclick = () => {
+        currentUsers.forEach(u => { u.isFace = false; const card = document.getElementById(u.elementId); if(card) { const cb = card.querySelector(`#chk_${u.elementId}`); if(cb) cb.checked = false; } });
+    };
+</script>
+</body>
+</html>

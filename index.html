@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>VK Аватарки — крупные аватарки и звёзды</title>
+    <title>VK Аватарки — НГАУ, НГТУ, СибУПк</title>
     <style>
         * { box-sizing: border-box; }
         body {
@@ -21,32 +21,70 @@
         }
         h2 { 
             margin-top: 0; 
-            font-size: 1.6rem; 
+            font-size: 1.5rem; 
             display: flex; 
             align-items: center; 
             gap: 12px; 
             flex-wrap: wrap; 
             margin-bottom: 0.8rem;
         }
-        .sync-status {
+        .selector-bar {
+            background: #f0f2f5;
+            padding: 8px 16px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .selector-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .selector-group label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .univ-select {
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 30px;
+            border: 1px solid #ccd0d5;
+            background: white;
+            cursor: pointer;
+        }
+        .list-badge {
+            background: #4caf50;
+            color: white;
+            padding: 5px 14px;
+            border-radius: 30px;
             font-size: 13px;
+            font-weight: 600;
+        }
+        .sync-status {
+            font-size: 12px;
             background: #e8f0fe;
-            padding: 4px 14px;
+            padding: 4px 12px;
             border-radius: 40px;
             font-weight: normal;
         }
         .sync-status.synced { background: #4caf50; color: white; }
         .sync-status.syncing { background: #ff9800; color: white; }
         .sync-status.error { background: #f44336; color: white; }
-        .flex-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+        .flex-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 16px; }
         .input-area { flex: 2; min-width: 280px; }
         .token-area { flex: 1; min-width: 280px; }
         textarea {
             width: 100%;
-            height: 160px;
+            height: 180px;
             padding: 12px;
             font-family: 'Courier New', monospace;
-            font-size: 13px;
+            font-size: 12px;
             border: 1px solid #ccd0d5;
             border-radius: 16px;
             background: #fafbfc;
@@ -70,9 +108,9 @@
             transform: translateY(-50%);
             background: #e4e6eb;
             border: none;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 30px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             cursor: pointer;
         }
@@ -86,7 +124,7 @@
             background: #2787f5;
             color: white;
             border: none;
-            padding: 10px 16px;
+            padding: 9px 14px;
             border-radius: 14px;
             font-weight: 600;
             font-size: 13px;
@@ -95,7 +133,6 @@
         }
         button:hover { transform: scale(1.02); background: #1a66c9; }
         .secondary-btn { background: #e4e6eb; color: #1e1e2a; }
-        .success-btn { background: #4caf50; }
         .warning-btn { background: #ff9800; }
         .status {
             background: #e7f3ff;
@@ -117,12 +154,12 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-        .stats-text { font-size: 14px; font-weight: 600; }
+        .stats-text { font-size: 13px; font-weight: 600; }
         .sort-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
         .sort-buttons button {
             background: rgba(255,255,255,0.2);
-            padding: 5px 12px;
-            font-size: 12px;
+            padding: 4px 10px;
+            font-size: 11px;
         }
         .sort-buttons button.active {
             background: rgba(255,255,255,0.4);
@@ -130,25 +167,23 @@
         }
         .filter-bar {
             background: #f8f9fa;
-            padding: 10px 16px;
+            padding: 8px 14px;
             border-radius: 20px;
             margin: 12px 0;
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
         }
         .filter-btn {
             background: #e4e6eb;
-            padding: 5px 14px;
-            font-size: 12px;
+            padding: 5px 12px;
+            font-size: 11px;
             border-radius: 30px;
             cursor: pointer;
             font-weight: 500;
         }
         .filter-btn.active { background: #2787f5; color: white; }
-        
-        /* Сетка аватарок — шире из-за больших фото */
         .avatars-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -158,7 +193,7 @@
         .avatar-card {
             background: white;
             border-radius: 20px;
-            padding: 12px 12px 12px;
+            padding: 12px;
             border: 2px solid #eef2f6;
             position: relative;
             transition: 0.2s;
@@ -167,22 +202,21 @@
         .avatar-card.high-rating { border: 2px solid #ff9800; background: #fff8e1; }
         .delete-btn {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 30px;
-            height: 30px;
+            top: 6px;
+            right: 6px;
+            width: 28px;
+            height: 28px;
             background: #f44336;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
             color: white;
             font-weight: bold;
             z-index: 2;
         }
-        /* Аватарка в 2 раза больше — 260x260px */
         .avatar-card img {
             width: 260px;
             height: 260px;
@@ -220,7 +254,6 @@
             font-weight: 600;
             margin-bottom: 3px;
         }
-        /* Звёзды в 1.5 раза больше — 32px */
         .stars-small { display: flex; gap: 6px; justify-content: center; }
         .star-small {
             font-size: 32px;
@@ -240,12 +273,12 @@
         .total-rating span { color: #ff9800; font-size: 16px; }
         .rank-badge {
             position: absolute;
-            top: 8px;
-            left: 8px;
+            top: 6px;
+            left: 6px;
             background: #ffc107;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 30px;
             z-index: 2;
         }
@@ -270,7 +303,6 @@
             border-radius: 16px;
             line-height: 1.4;
         }
-        /* Адаптация под мобильные */
         @media (max-width: 700px) {
             .avatars-grid { grid-template-columns: 1fr; }
             .avatar-card img { width: 220px; height: 220px; }
@@ -286,10 +318,31 @@
 <div class="container">
     <h2>⭐ VK Аватарки <span id="syncBadge" class="sync-status">☁️ Готово</span></h2>
 
+    <!-- Панель выбора вуза -->
+    <div class="selector-bar">
+        <div class="selector-group">
+            <label>🎓 ВУЗ:</label>
+            <select id="univSelect" class="univ-select">
+                <option value="ngau">🇷🇺 НГАУ</option>
+                <option value="ngtu">🇷🇺 НГТУ</option>
+                <option value="sibupk">🇷🇺 СибУПк</option>
+            </select>
+            <div class="list-badge" id="listCounter">📋 0 профилей</div>
+        </div>
+        <div class="selector-group">
+            <button id="switchAndLoadBtn" class="secondary-btn">🔄 Переключить и загрузить</button>
+        </div>
+    </div>
+
     <div class="flex-row">
         <div class="input-area">
             <label style="font-weight: 600; font-size: 13px; margin-bottom: 5px; display: block;">📋 Ссылки VK (каждая с новой строки)</label>
-            <textarea id="linksInput" placeholder="https://vk.com/id387384141&#10;https://vk.com/id375622954"></textarea>
+            <textarea id="linksInput" placeholder="https://vk.com/id387384141"></textarea>
+            <div style="display: flex; gap: 8px; margin-top: 6px;">
+                <button id="loadNgauBtn" class="secondary-btn" style="padding: 5px 10px; font-size: 11px;">📂 НГАУ</button>
+                <button id="LoadNgtuBtn" class="secondary-btn" style="padding: 5px 10px; font-size: 11px;">📂 НГТУ</button>
+                <button id="loadSibupkBtn" class="secondary-btn" style="padding: 5px 10px; font-size: 11px;">📂 СибУПк</button>
+            </div>
         </div>
         <div class="token-area">
             <label style="font-weight: 600; font-size: 13px; margin-bottom: 5px; display: block;">🔑 Access Token</label>
@@ -298,7 +351,7 @@
                 <button id="smartPasteBtn" class="paste-btn">📋 Вставить</button>
             </div>
             <div class="button-group">
-                <button id="loadBtn">🚀 Загрузить</button>
+                <button id="loadBtn">🚀 Загрузить оценки</button>
                 <button id="syncNowBtn" class="warning-btn">☁️ Синхр. сейчас</button>
                 <button id="clearBtn" class="secondary-btn">🗑 Очистить</button>
             </div>
@@ -328,20 +381,361 @@
     <div id="avatarsGrid" class="avatars-grid"></div>
 
     <div class="note">
-        💾 <strong>Синхронизация через Google Sheets</strong> — все оценки автоматически сохраняются в облако.<br>
+        💾 <strong>Синхронизация для 3 вузов!</strong> Каждый список сохраняется в свою Google таблицу.<br>
         ⭐ Оценивайте по 4 критериям (Фигура, Внешность, Интересы, Моя оценка).<br>
         🔄 Автосохранение каждые 10 секунд. Нажмите «Синхр. сейчас» для ручного сохранения.<br>
-        📱 <strong>На телефоне</strong> откройте этот же файл — данные подгрузятся автоматически.
+        📱 <strong>На телефоне</strong> откройте этот же файл — выберите вуз и данные подгрузятся автоматически.
     </div>
 </div>
 
 <script>
     // ============================================
-    // ВАША ССЫЛКА НА ВЕБ-ПРИЛОЖЕНИЕ
+    // ✅ ВАШИ 3 URL УЖЕ ВСТАВЛЕНЫ ✅
     // ============================================
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx_lczvkRPWLcWJREJ-aAgROWaGVUjaQQ0SX0n_thHSsudUPNpUiD4yA1LSNdYtuhbLWA/exec';
+    const APPS_SCRIPT_URLS = {
+        'ngau': 'https://script.google.com/macros/s/AKfycbyk64TsDNhx0arUdSunfT2geyN-01B42s7Xb5h6dsVz_vnDau_2lpR6ctR27ZspIL3NOw/exec',
+        'ngtu': 'https://script.google.com/macros/s/AKfycbwefrGtpvYvJ0UTFegG-w77N9SigHpXW691bUskKUlW5mMlCKW2h5LIe71S51hV21O19A/exec',
+        'sibupk': 'https://script.google.com/macros/s/AKfycbxYpa66_RmHbjOJBCl9ugc_1hVfm3SfCOdu4AqH1D6vcWgmgUeYRvNrxibLKS9CJVNFHQ/exec'
+    };
+    // ============================================
 
-    // Безопасный логгер
+    // Предустановленные списки
+    const PRESET_LISTS = {
+        ngau: `https://vk.com/id161163270
+https://vk.com/id176529250
+https://vk.com/id192261639
+https://vk.com/id193081706
+https://vk.com/id197451299
+https://vk.com/id203886034
+https://vk.com/id20394861
+https://vk.com/id228492760
+https://vk.com/id230374261
+https://vk.com/id238543078
+https://vk.com/id238830099
+https://vk.com/id243541646
+https://vk.com/id248660963
+https://vk.com/id261634078
+https://vk.com/id268325126
+https://vk.com/id276539784
+https://vk.com/id276629865
+https://vk.com/id277220668
+https://vk.com/id278600740
+https://vk.com/id284568027
+https://vk.com/id297326045
+https://vk.com/id311416865
+https://vk.com/id315392716
+https://vk.com/id322967271
+https://vk.com/id326169799
+https://vk.com/id328231276
+https://vk.com/id340532932
+https://vk.com/id349492112
+https://vk.com/id367794233
+https://vk.com/id370627314
+https://vk.com/id383091281
+https://vk.com/id398650831
+https://vk.com/id400033628
+https://vk.com/id400285057
+https://vk.com/id416872047
+https://vk.com/id438489854
+https://vk.com/id442673128
+https://vk.com/id448219973
+https://vk.com/id453929690
+https://vk.com/id455670898
+https://vk.com/id459439931
+https://vk.com/id470922508
+https://vk.com/id478347497
+https://vk.com/id481959163
+https://vk.com/id484306589
+https://vk.com/id491620975
+https://vk.com/id501058967
+https://vk.com/id501550671
+https://vk.com/id510196762
+https://vk.com/id512903919
+https://vk.com/id514727283
+https://vk.com/id539996416
+https://vk.com/id543131007
+https://vk.com/id552404097
+https://vk.com/id558346543
+https://vk.com/id580265474
+https://vk.com/id593978373
+https://vk.com/id604448008
+https://vk.com/id610797769
+https://vk.com/id694629344
+https://vk.com/id695325559
+https://vk.com/id705110800
+https://vk.com/id736142284
+https://vk.com/id876175471`,
+
+        ngtu: `https://vk.com/id101151186
+https://vk.com/id167744453
+https://vk.com/id187317101
+https://vk.com/id190744810
+https://vk.com/id191712600
+https://vk.com/id200376259
+https://vk.com/id219041911
+https://vk.com/id235917677
+https://vk.com/id23600947
+https://vk.com/id236970740
+https://vk.com/id241346013
+https://vk.com/id246895092
+https://vk.com/id247596187
+https://vk.com/id248556938
+https://vk.com/id250260395
+https://vk.com/id254414033
+https://vk.com/id255190075
+https://vk.com/id269924844
+https://vk.com/id274193480
+https://vk.com/id274814958
+https://vk.com/id277141717
+https://vk.com/id285117399
+https://vk.com/id286388005
+https://vk.com/id288160434
+https://vk.com/id297742035
+https://vk.com/id298863556
+https://vk.com/id299807601
+https://vk.com/id301081484
+https://vk.com/id301701444
+https://vk.com/id303292888
+https://vk.com/id305733885
+https://vk.com/id305842882
+https://vk.com/id311416865
+https://vk.com/id312230686
+https://vk.com/id317030614
+https://vk.com/id319573214
+https://vk.com/id319710912
+https://vk.com/id320204534
+https://vk.com/id320841249
+https://vk.com/id322446923
+https://vk.com/id323325043
+https://vk.com/id323937394
+https://vk.com/id324511736
+https://vk.com/id326114828
+https://vk.com/id327791291
+https://vk.com/id328671031
+https://vk.com/id334420745
+https://vk.com/id335522442
+https://vk.com/id336080304
+https://vk.com/id341393851
+https://vk.com/id341588989
+https://vk.com/id349073988
+https://vk.com/id349340831
+https://vk.com/id356511798
+https://vk.com/id364564926
+https://vk.com/id365159446
+https://vk.com/id367886381
+https://vk.com/id368055764
+https://vk.com/id371839553
+https://vk.com/id372008423
+https://vk.com/id373857920
+https://vk.com/id375622954
+https://vk.com/id376634075
+https://vk.com/id384877566
+https://vk.com/id387147073
+https://vk.com/id387384141
+https://vk.com/id388326637
+https://vk.com/id388874732
+https://vk.com/id392605102
+https://vk.com/id395759005
+https://vk.com/id396748306
+https://vk.com/id398287493
+https://vk.com/id401253147
+https://vk.com/id401584521
+https://vk.com/id407575790
+https://vk.com/id408414008
+https://vk.com/id410413031
+https://vk.com/id420870598
+https://vk.com/id426968806
+https://vk.com/id426981963
+https://vk.com/id431364371
+https://vk.com/id435847979
+https://vk.com/id441995978
+https://vk.com/id446223298
+https://vk.com/id453499644
+https://vk.com/id456958191
+https://vk.com/id457005084
+https://vk.com/id461366030
+https://vk.com/id466435666
+https://vk.com/id466479339
+https://vk.com/id467599659
+https://vk.com/id475821191
+https://vk.com/id476543902
+https://vk.com/id478944701
+https://vk.com/id480710180
+https://vk.com/id482289148
+https://vk.com/id482297455
+https://vk.com/id484896267
+https://vk.com/id489201643
+https://vk.com/id490265253
+https://vk.com/id494509869
+https://vk.com/id495544078
+https://vk.com/id497200177
+https://vk.com/id502770815
+https://vk.com/id503266039
+https://vk.com/id503567202
+https://vk.com/id504670784
+https://vk.com/id505798806
+https://vk.com/id506280515
+https://vk.com/id506413680
+https://vk.com/id507414156
+https://vk.com/id507804037
+https://vk.com/id511780599
+https://vk.com/id513086395
+https://vk.com/id514177042
+https://vk.com/id521401740
+https://vk.com/id526738819
+https://vk.com/id532559142
+https://vk.com/id535540122
+https://vk.com/id535851714
+https://vk.com/id552819548
+https://vk.com/id563654666
+https://vk.com/id580899919
+https://vk.com/id586339170
+https://vk.com/id589644451
+https://vk.com/id590200148
+https://vk.com/id597897183
+https://vk.com/id613143174
+https://vk.com/id616808169
+https://vk.com/id616836753
+https://vk.com/id623953612
+https://vk.com/id651719603
+https://vk.com/id653548003
+https://vk.com/id666610694
+https://vk.com/id697465530
+https://vk.com/id698928251
+https://vk.com/id711087982
+https://vk.com/id757699841
+https://vk.com/id817845538
+https://vk.com/id823166217`,
+
+        sibupk: `https://vk.com/id86255125
+https://vk.com/id142477678
+https://vk.com/id153567523
+https://vk.com/id154576173
+https://vk.com/id181330768
+https://vk.com/id184378627
+https://vk.com/id189466096
+https://vk.com/id202877201
+https://vk.com/id214799434
+https://vk.com/id217987402
+https://vk.com/id219265107
+https://vk.com/id223496558
+https://vk.com/id22505945
+https://vk.com/id246832486
+https://vk.com/id247984271
+https://vk.com/id259665326
+https://vk.com/id283174987
+https://vk.com/id286716317
+https://vk.com/id290050637
+https://vk.com/id290261964
+https://vk.com/id291433286
+https://vk.com/id297742035
+https://vk.com/id300251520
+https://vk.com/id304078058
+https://vk.com/id313374777
+https://vk.com/id319548165
+https://vk.com/id320927518
+https://vk.com/id326158804
+https://vk.com/id329556759
+https://vk.com/id332999651
+https://vk.com/id336211062
+https://vk.com/id344822644
+https://vk.com/id348306172
+https://vk.com/id348412421
+https://vk.com/id352405680
+https://vk.com/id356687112
+https://vk.com/id359755983
+https://vk.com/id361444566
+https://vk.com/id364304186
+https://vk.com/id373853639
+https://vk.com/id375719427
+https://vk.com/id388039930
+https://vk.com/id389847103
+https://vk.com/id396571537
+https://vk.com/id398648917
+https://vk.com/id401464536
+https://vk.com/id404475892
+https://vk.com/id413009276
+https://vk.com/id443437239
+https://vk.com/id445501780
+https://vk.com/id448720539
+https://vk.com/id453802934
+https://vk.com/id457178583
+https://vk.com/id467880753
+https://vk.com/id469631600
+https://vk.com/id471264175
+https://vk.com/id472258218
+https://vk.com/id472484198
+https://vk.com/id475441322
+https://vk.com/id478912139
+https://vk.com/id482593600
+https://vk.com/id484223080
+https://vk.com/id484737629
+https://vk.com/id486314996
+https://vk.com/id490693913
+https://vk.com/id492210858
+https://vk.com/id493197927
+https://vk.com/id496483190
+https://vk.com/id498303728
+https://vk.com/id499689508
+https://vk.com/id503878776
+https://vk.com/id506814817
+https://vk.com/id508275081
+https://vk.com/id508384576
+https://vk.com/id509057317
+https://vk.com/id515504426
+https://vk.com/id526231440
+https://vk.com/id527925082
+https://vk.com/id539303631
+https://vk.com/id540304617
+https://vk.com/id554809359
+https://vk.com/id558249475
+https://vk.com/id559159596
+https://vk.com/id561062186
+https://vk.com/id561457553
+https://vk.com/id566208874
+https://vk.com/id566975643
+https://vk.com/id567658787
+https://vk.com/id570265457
+https://vk.com/id575619876
+https://vk.com/id578078663
+https://vk.com/id578414164
+https://vk.com/id583149869
+https://vk.com/id584974972
+https://vk.com/id585829602
+https://vk.com/id587322310
+https://vk.com/id588703355
+https://vk.com/id589503508
+https://vk.com/id591907770
+https://vk.com/id592124110
+https://vk.com/id596701016
+https://vk.com/id601276845
+https://vk.com/id602180478
+https://vk.com/id606271062
+https://vk.com/id608138325
+https://vk.com/id610285707
+https://vk.com/id613692614
+https://vk.com/id616297598
+https://vk.com/id617327259
+https://vk.com/id625614161
+https://vk.com/id640624921
+https://vk.com/id657431298
+https://vk.com/id714028965
+https://vk.com/id746467276
+https://vk.com/id813766446
+https://vk.com/id866131876`
+    };
+
+    let currentUniv = 'ngau';
+    let currentUsers = [];
+    let nextCardId = 0;
+    let currentSortMode = 'original';
+    let autoSyncTimer = null;
+    let isSyncing = false;
+
+    function getCurrentScriptUrl() {
+        return APPS_SCRIPT_URLS[currentUniv];
+    }
+
     function safeLog() {
         try { if (window.console && console.log) console.log.apply(console, arguments); } catch(e) {}
     }
@@ -356,15 +750,9 @@
         { id: 'myRating', name: '🧠 Моя оценка', emoji: '🧠' }
     ];
 
-    let currentUsers = [];
-    let nextCardId = 0;
-    let currentSortMode = 'original';
-    let autoSyncTimer = null;
-    let isSyncing = false;
-
-    // === Синхронизация с Google Sheets ===
     async function saveToCloud() {
-        if (!APPS_SCRIPT_URL || isSyncing) return false;
+        const url = getCurrentScriptUrl();
+        if (!url || isSyncing) return false;
         isSyncing = true;
         const badge = document.getElementById('syncBadge');
         if (badge) badge.className = 'sync-status syncing';
@@ -382,7 +770,7 @@
             params.append('action', 'save');
             params.append('data', JSON.stringify(usersToSave));
             
-            await fetch(`${APPS_SCRIPT_URL}?${params.toString()}`, { method: 'GET', mode: 'no-cors' });
+            await fetch(`${url}?${params.toString()}`, { method: 'GET', mode: 'no-cors' });
             
             if (badge) {
                 badge.className = 'sync-status synced';
@@ -401,9 +789,10 @@
     }
 
     async function loadFromCloud() {
-        if (!APPS_SCRIPT_URL) return null;
+        const url = getCurrentScriptUrl();
+        if (!url) return null;
         try {
-            const response = await fetch(`${APPS_SCRIPT_URL}?action=load`);
+            const response = await fetch(`${url}?action=load`);
             const data = await response.json();
             if (data.status === 'ok' && data.users) {
                 const ratings = {};
@@ -504,6 +893,7 @@
         const avg = total > 0 ? (visible.reduce((s,u) => s + u.totalRating, 0) / total).toFixed(1) : 0;
         const statsDiv = document.getElementById('statsText');
         if (statsDiv) statsDiv.innerHTML = `📊 Всего: ${total} | ⭐ Средний: ${avg}`;
+        document.getElementById('listCounter').innerHTML = `📋 ${total} профилей`;
     }
 
     window.setCriterionRating = (cardId, criterionId, rating) => {
@@ -619,7 +1009,6 @@
         updateStats();
     }
 
-    // === VK API ===
     function extractTokenFromString(input) {
         if (!input) return null;
         let token = input.trim();
@@ -722,15 +1111,13 @@
         startAutoSync();
         
         const statusDiv = document.getElementById('status');
-        statusDiv.innerHTML = `✅ Загружено ${usersArray.length} из ${linksOrder.length}. ☁️ Синхронизация активна!`;
+        statusDiv.innerHTML = `✅ Загружено ${usersArray.length} из ${linksOrder.length}. ☁️ Синхронизация для ${currentUniv.toUpperCase()} активна!`;
     }
 
-    async function loadAvatars() {
+    async function loadAvatarsWithLinks(links) {
         const rawToken = document.getElementById('tokenInput').value.trim();
         const token = extractTokenFromString(rawToken);
-        const linksText = document.getElementById('linksInput').value;
         if (!token) { document.getElementById('status').innerHTML = '⚠️ Введите токен'; return; }
-        const links = parseLinksFromText(linksText);
         if (!links.length) { document.getElementById('status').innerHTML = '❌ Нет ссылок'; return; }
         document.getElementById('status').innerHTML = '⏳ Загрузка...';
         document.getElementById('loadBtn').disabled = true;
@@ -742,6 +1129,33 @@
             safeWarn(e);
         } finally { 
             document.getElementById('loadBtn').disabled = false; 
+        }
+    }
+
+    async function loadAvatarsFromInput() {
+        const linksText = document.getElementById('linksInput').value;
+        const links = parseLinksFromText(linksText);
+        await loadAvatarsWithLinks(links);
+    }
+
+    function loadPreset(univ) {
+        const preset = PRESET_LISTS[univ];
+        if (preset) {
+            document.getElementById('linksInput').value = preset;
+            document.getElementById('univSelect').value = univ;
+            currentUniv = univ;
+            loadAvatarsFromInput();
+        }
+    }
+
+    async function switchUnivAndLoad() {
+        const newUniv = document.getElementById('univSelect').value;
+        if (newUniv === currentUniv) return;
+        currentUniv = newUniv;
+        const preset = PRESET_LISTS[currentUniv];
+        if (preset) {
+            document.getElementById('linksInput').value = preset;
+            await loadAvatarsFromInput();
         }
     }
 
@@ -771,11 +1185,14 @@
         nextCardId = 0;
     }
 
-    // === Назначение обработчиков ===
-    document.getElementById('loadBtn').onclick = loadAvatars;
+    document.getElementById('loadBtn').onclick = loadAvatarsFromInput;
     document.getElementById('clearBtn').onclick = clearAll;
     document.getElementById('smartPasteBtn').onclick = smartPaste;
     document.getElementById('syncNowBtn').onclick = () => saveToCloud();
+    document.getElementById('switchAndLoadBtn').onclick = switchUnivAndLoad;
+    document.getElementById('loadNgauBtn').onclick = () => loadPreset('ngau');
+    document.getElementById('LoadNgtuBtn').onclick = () => loadPreset('ngtu');
+    document.getElementById('loadSibupkBtn').onclick = () => loadPreset('sibupk');
     document.getElementById('sortByRatingDesc').onclick = () => { currentSortMode = 'ratingDesc'; sortAndRender(); };
     document.getElementById('sortByRatingAsc').onclick = () => { currentSortMode = 'ratingAsc'; sortAndRender(); };
     document.getElementById('sortByOriginal').onclick = () => { currentSortMode = 'original'; sortAndRender(); };
@@ -787,7 +1204,7 @@
     
     window.restoreAll = restoreAll;
     
-    safeLog('Приложение загружено');
+    safeLog('Приложение загружено, 3 списка готовы, URL вставлены');
 </script>
 </body>
 </html>
